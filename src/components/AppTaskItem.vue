@@ -7,6 +7,7 @@ const props = defineProps([
   "editMode",
   "handleEditMode",
   "saveEditedTaskName",
+  "removeTask",
 ]);
 
 // let editMode = ref(false);
@@ -27,8 +28,20 @@ const handleInput = (e) => {
   <li v-else>
     <label><input type="checkbox" id="checkbox" /><slot /></label>
     <button @click="handleEditMode(id)">Edit</button>
-    <button>Remove</button>
+    <button @click="removeTask(id)">Remove</button>
+    <label>
+      Add some description
+      <input type="textarea" />
+    </label>
   </li>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+li {
+  background-color: #fff;
+  &:hover,
+  &:active {
+    cursor: pointer;
+  }
+}
+</style>

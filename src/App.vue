@@ -17,6 +17,7 @@ const addTask = () => {
     id: Math.floor(Math.random() * 100),
     name: taskName.value,
     editMode: false,
+    checked: false,
   };
   tasks.value.push(newTask);
   taskName.value = "";
@@ -44,7 +45,7 @@ const saveEditedTaskName = (id, value) => {
 // Удаляем задачу
 
 const removeTask = (id) => {
-  return (tasks.value = tasks.value.filter((task) => task.id !== id));
+  tasks.value = tasks.value.filter((task) => task.id !== id);
 };
 
 // return { count, tasks, addTask, removeTask };
@@ -69,11 +70,11 @@ const removeTask = (id) => {
         >
           <template #item="{ element: task }">
             <app-task-item
-              :edit="edit"
               :saveEditedTaskName="saveEditedTaskName"
               :handleEditMode="handleEditMode"
               :taskName="task.name"
               :editMode="task.editMode"
+              :removeTask="removeTask"
               :id="task.id"
               class="column__item"
               >{{ task.name }}
@@ -98,9 +99,6 @@ const removeTask = (id) => {
 </template>
 
 <style scoped>
-.drag {
-  transform: rotate(10deg);
-}
 .ghost {
   background: rgb(231, 231, 231);
 }
