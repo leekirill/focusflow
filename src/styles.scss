@@ -32,8 +32,6 @@ h3, ul {
   &:nth-child(even) {
     background-color: rgb(234, 234, 234);
   }
-  // border-radius: 6px;
-
   &__title {
     padding: 20px;
     background-color: #f7f7f7;
@@ -41,10 +39,7 @@ h3, ul {
 
   &__item {
     list-style: none;
-    background-color: red;
+    border: 1px solid #bbbbbb;
     padding: 10px;
-    &:nth-child(even) {
-      background-color: rgb(255, 121, 121);
-    }
   }
 }
