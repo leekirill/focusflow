@@ -16,6 +16,7 @@ const addTask = () => {
   const newTask = {
     id: Math.floor(Math.random() * 100),
     name: taskName.value,
+    editMode: false,
   };
   tasks.value.push(newTask);
   taskName.value = "";
@@ -23,10 +24,19 @@ const addTask = () => {
 
 // Редактируем задачу
 
+const handleEditMode = (id) => {
+  tasks.value.filter((task) => {
+    if (task.id === id) {
+      task.editMode = !task.editMode;
+    }
+  });
+};
+
 const saveEditedTaskName = (id, value) => {
   tasks.value.filter((task) => {
     if (task.id === id) {
       task.name = value;
+      task.editMode = !task.editMode;
     }
   });
 };
@@ -61,7 +71,9 @@ const removeTask = (id) => {
             <app-task-item
               :edit="edit"
               :saveEditedTaskName="saveEditedTaskName"
+              :handleEditMode="handleEditMode"
               :taskName="task.name"
+              :editMode="task.editMode"
               :id="task.id"
               class="column__item"
               >{{ task.name }}

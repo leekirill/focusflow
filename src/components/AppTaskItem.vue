@@ -1,24 +1,23 @@
 <script setup>
 import { ref } from "vue";
 
-const props = defineProps(["id", "taskName", "saveEditedTaskName"]);
+const props = defineProps([
+  "id",
+  "taskName",
+  "editMode",
+  "handleEditMode",
+  "saveEditedTaskName",
+]);
 
-let editMode = ref(false);
+// let editMode = ref(false);
 let editedTaskName = ref("");
 
-const handleEditMode = () => {
-  editMode.value = !editMode.value;
-};
 const handleInput = (e) => {
   editedTaskName.value = e.target.value;
-};
-const saveEditedTaskName = () => {
-  editMode.value = !editMode.value;
 };
 </script>
 
 <template>
-  {{ editMode }}
   <li v-if="editMode">
     <label for="edit">
       <input type="text" :value="props.taskName" @input="handleInput" />
@@ -27,7 +26,7 @@ const saveEditedTaskName = () => {
   </li>
   <li v-else>
     <label><input type="checkbox" id="checkbox" /><slot /></label>
-    <button @click="handleEditMode">Edit</button>
+    <button @click="handleEditMode(id)">Edit</button>
     <button>Remove</button>
   </li>
 </template>
