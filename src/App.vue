@@ -5,9 +5,10 @@ import AppTaskItem from "./components/AppTaskItem.vue";
 
 let tasks = ref([]);
 let formIsOpen = ref(false);
+let editMode = ref(false);
 let formData = ref({
   taskName: null,
-  taskDesribe: null,
+  taskDescription: null,
   taskPriority: null,
 });
 
@@ -19,11 +20,7 @@ const openForm = () => {
 
 const addItem = () => {
   // Валидаци полей
-  if (
-    formData.value.taskName === null ||
-    formData.value.taskDesribe === null ||
-    formData.value.taskPriority === null
-  ) {
+  if (formData.value.taskName === null) {
     alert("Fill the inputs");
     return;
   }
@@ -31,28 +28,47 @@ const addItem = () => {
   const newTask = {
     id: Math.floor(Math.random() * 100),
     taskName: formData.value.taskName,
-    taskDesribe: formData.value.taskDesribe,
+    taskDescription: formData.value.taskDescription,
     taskPriority: formData.value.taskPriority,
     editMode: false,
     checked: false,
   };
 
-  tasks.value.push(newTask);
+  if (editMode.value) {
+    console.log(123);
+    return;
+  }
+  tasks.value.unshift(newTask);
   formData.value.taskName = null;
-  formData.value.taskDesribe = null;
+  formData.value.taskDescription = null;
   formData.value.taskPriority = null;
+
   formIsOpen.value = !formIsOpen.value;
 };
 
 // Редактируем задачу
 
-// const handleEditMode = (id) => {
-//   tasks.value.filter((task) => {
-//     if (task.id === id) {
-//       task.editMode = !task.editMode;
-//     }
-//   });
-// };
+// const handleEditForm = (id) => {
+//   formIsOpen.value = !formIsOpen.value
+//   console.log(id)
+// }
+
+const handleEditMode = (id) => {
+  formIsOpen.value = !formIsOpen.value;
+  editMode.value = !editMode.value;
+  tasks.value.filter((task) => {
+    if (task.id === id) {
+      formData.value.taskName = task.taskName;
+      formData.value.taskDescription = task.taskDescription;
+      formData.value.taskPriority = task.taskPriority;
+    }
+  });
+  // tasks.value.filter((task) => {
+  //   if (task.id === id) {
+  //     task.editMode = !task.editMode;
+  //   }
+  // });
+};
 
 // const saveEditedTaskName = (id, value) => {
 //   tasks.value.filter((task) => {
@@ -79,31 +95,31 @@ const addItem = () => {
         <h3 class="column__title">No Status</h3>
         <label>
           <!-- <input type="text" v-model.trim="taskName" @keydown.enter="addTask" /> -->
-          <button @click="openForm">Add todo</button>
+          <button @click="openForm">
+            {{ formIsOpen ? "Close" : "Add todo" }}
+          </button>
         </label>
-        <div v-if="formIsOpen" class="column__item--form">
-          <form type="submit" ref="form" @submit.prevent="addItem">
+        <div class="column__item--form" v-show="formIsOpen">
+          <form type="submit" @submit.prevent="addItem">
             <div class="forms">
               <label for="taskName">Task name</label>
               <input type="text" id="taskName" v-model="formData.taskName" />
-              <label for="taskDescribe">Describe</label>
-              <input
-                type="text"
-                id="taskDescribe"
-                v-model="formData.taskDesribe"
+              <label for="taskDescription">Description</label>
+              <textarea
+                id="taskDescription"
+                v-model="formData.taskDescription"
               />
               <label>Priority</label>
               <select v-model="formData.taskPriority">
-                <option>Priority 1</option>
-                <option>Priority 2</option>
-                <option>Priority 3</option>
+                <option value="high">high</option>
+                <option value="medium">medium</option>
+                <option value="low">low</option>
               </select>
             </div>
             <button>Button</button>
           </form>
         </div>
         <draggable
-          v-else
           v-model="tasks"
           tag="ul"
           item-key="id"
@@ -115,7 +131,11 @@ const addItem = () => {
             <app-task-item
               :id="task.id"
               :taskName="task.taskName"
-              :taskDescribe="task.taskDescribe"
+              :taskDescription="task.taskDescription"
+              :taskPriority="task.taskPriority"
+              :editMode="task.editMode"
+              :checked="task.checked"
+              :handleEditMode="handleEditMode"
               class="column__item"
               >{{ task.taskName }}
             </app-task-item>
@@ -145,6 +165,8 @@ const addItem = () => {
 
 .column__item--form {
   display: flex;
+  padding: 10px;
+  border: 1px solid #bbbbbb;
   .forms {
     display: flex;
     flex-direction: column;

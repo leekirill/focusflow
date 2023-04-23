@@ -1,14 +1,24 @@
 <script setup>
 import { ref, computed } from "vue";
 
-const props = defineProps(["id", "taskName", "taskDescribe"]);
-
-// let editMode = ref(false);
-let editedTaskName = ref("");
-
-const handleInput = (e) => {
-  editedTaskName.value = e.target.value;
-};
+const props = defineProps([
+  "id",
+  "taskName",
+  "taskDescription",
+  "taskPriority",
+  "editMode",
+  "checked",
+  "handleEditMode",
+]);
+console.log(
+  props.id,
+  props.taskName,
+  props.taskDescription,
+  props.taskPriority,
+  props.editMode,
+  props.checked,
+  props.handleEditMode
+);
 
 const getCurrentDate = computed(() => {
   let options = {
@@ -23,23 +33,19 @@ const getCurrentDate = computed(() => {
 </script>
 
 <template>
-  <li v-if="editMode">
-    <label for="edit">
-      <input type="text" :value="props.taskName" @input="handleInput" />
-      <button @click="saveEditedTaskName(id, editedTaskName)">Save me</button>
-    </label>
-  </li>
-  <li v-else>
+  <li>
     <label><input type="checkbox" id="checkbox" /><slot /></label>
     <button @click="handleEditMode(id)">Edit</button>
     <button @click="removeTask(id)">Remove</button>
-    <div>
-      <div v-if="isEditMode">{{ taskDescribe }}</div>
-      <label v-else class="descibe">
-        Add some description
-        <input type="textarea" />
+    <div class="item__bottom">
+      <label>
+        {{ props.taskDescription && "Description:" }}
+        <span>{{ props.taskDescription }}</span>
       </label>
-      <span>{{ getCurrentDate }}</span>
+      <div>
+        <span>{{ getCurrentDate }}</span>
+        <span>{{ taskPriority }}</span>
+      </div>
     </div>
   </li>
 </template>
@@ -51,9 +57,13 @@ li {
   &:active {
     cursor: pointer;
   }
-  .descibe {
-    display: flex;
-    flex-direction: column;
+}
+.item__bottom {
+  display: flex;
+  flex-direction: column;
+  div {
+    display: inherit;
+    justify-content: space-between;
   }
 }
 </style>
