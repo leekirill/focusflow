@@ -1,14 +1,7 @@
 <script setup>
 import { ref, computed } from "vue";
 
-const props = defineProps([
-  "id",
-  "taskName",
-  "editMode",
-  "handleEditMode",
-  "saveEditedTaskName",
-  "removeTask",
-]);
+const props = defineProps(["id", "taskName", "taskDescribe"]);
 
 // let editMode = ref(false);
 let editedTaskName = ref("");
@@ -40,11 +33,14 @@ const getCurrentDate = computed(() => {
     <label><input type="checkbox" id="checkbox" /><slot /></label>
     <button @click="handleEditMode(id)">Edit</button>
     <button @click="removeTask(id)">Remove</button>
-    <label>
-      Add some description
-      <input type="textarea" />
-    </label>
-    <span>{{ getCurrentDate }}</span>
+    <div>
+      <div v-if="isEditMode">{{ taskDescribe }}</div>
+      <label v-else class="descibe">
+        Add some description
+        <input type="textarea" />
+      </label>
+      <span>{{ getCurrentDate }}</span>
+    </div>
   </li>
 </template>
 
@@ -54,6 +50,10 @@ li {
   &:hover,
   &:active {
     cursor: pointer;
+  }
+  .descibe {
+    display: flex;
+    flex-direction: column;
   }
 }
 </style>
