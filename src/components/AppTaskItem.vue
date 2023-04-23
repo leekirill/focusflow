@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 const props = defineProps([
   "id",
@@ -16,6 +16,17 @@ let editedTaskName = ref("");
 const handleInput = (e) => {
   editedTaskName.value = e.target.value;
 };
+
+const getCurrentDate = computed(() => {
+  let options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "2-digit",
+  };
+  let today = new Date();
+  return today.toLocaleDateString("en-US", options);
+});
 </script>
 
 <template>
@@ -33,6 +44,7 @@ const handleInput = (e) => {
       Add some description
       <input type="textarea" />
     </label>
+    <span>{{ getCurrentDate }}</span>
   </li>
 </template>
 
