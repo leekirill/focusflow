@@ -1,5 +1,7 @@
 <script setup>
 import { ref, computed } from "vue";
+import Card from "primevue/card";
+import Button from "primevue/button";
 
 const props = defineProps([
   "id",
@@ -33,21 +35,37 @@ const getCurrentDate = computed(() => {
 </script>
 
 <template>
-  <li>
-    <label><input type="checkbox" id="checkbox" /><slot /></label>
-    <button @click="handleEditMode(id)">Edit</button>
-    <button @click="removeTask(id)">Remove</button>
-    <div class="item__bottom">
-      <label>
-        {{ props.taskDescription && "Description:" }}
-        <span>{{ props.taskDescription }}</span>
-      </label>
-      <div>
-        <span>{{ getCurrentDate }}</span>
-        <span>{{ taskPriority }}</span>
+  <Card>
+    <input type="checkbox" id="checkbox" />
+    <template #title
+      ><label for="checkbox"><slot /></label
+    ></template>
+
+    <template #content>
+      <Button
+        label="Edit"
+        severity="secondary"
+        outlined
+        @click="handleEditMode(id)"
+      ></Button>
+      <Button
+        label="Remove"
+        severity="danger"
+        text
+        @click="removeTask(id)"
+      ></Button>
+      <div class="item__bottom">
+        <label>
+          {{ props.taskDescription && "Description:" }}
+          <span>{{ props.taskDescription }}</span>
+        </label>
+        <div>
+          <span>{{ getCurrentDate }}</span>
+          <span>{{ taskPriority }}</span>
+        </div>
       </div>
-    </div>
-  </li>
+    </template>
+  </Card>
 </template>
 
 <style scoped lang="scss">
