@@ -101,6 +101,7 @@ const handleEditMode = (id) => {
 <template>
   <section>
     <div class="container">
+      <button>Add task</button>
       <div class="column">
         <h3>No Started</h3>
         <draggable
