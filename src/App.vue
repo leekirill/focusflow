@@ -29,31 +29,32 @@ const openForm = () => {
 };
 
 const addItem = () => {
+  columns.value[0].push({ name: "Newbie", id: 3 });
   // Валидаци полей
-  if (formData.value.taskName === null) {
-    alert("Fill the inputs");
-    return;
-  }
+  // if (formData.value.taskName === null) {
+  //   alert("Fill the inputs");
+  //   return;
+  // }
 
-  const newTask = {
-    id: Math.floor(Math.random() * 100),
-    taskName: formData.value.taskName,
-    taskDescription: formData.value.taskDescription,
-    taskPriority: formData.value.taskPriority,
-    editMode: false,
-    checked: false,
-  };
+  // const newTask = {
+  //   id: Math.floor(Math.random() * 100),
+  //   taskName: formData.value.taskName,
+  //   taskDescription: formData.value.taskDescription,
+  //   taskPriority: formData.value.taskPriority,
+  //   editMode: false,
+  //   checked: false,
+  // };
 
-  if (editMode.value) {
-    console.log(123);
-  }
-  columns.value[0].unshift(newTask);
-  console.log(columns.value[0]);
-  formData.value.taskName = null;
-  formData.value.taskDescription = null;
-  formData.value.taskPriority = null;
+  // if (editMode.value) {
+  //   console.log(123);
+  // }
+  // columns.value[0].unshift(newTask);
+  // console.log(columns.value[0]);
+  // formData.value.taskName = null;
+  // formData.value.taskDescription = null;
+  // formData.value.taskPriority = null;
 
-  formIsOpen.value = !formIsOpen.value;
+  // formIsOpen.value = !formIsOpen.value;
 };
 
 // Редактируем задачу
@@ -101,7 +102,6 @@ const handleEditMode = (id) => {
 <template>
   <section>
     <div class="container">
-      <button>Add task</button>
       <div class="column">
         <h3>No Started</h3>
         <draggable
@@ -169,6 +169,8 @@ const handleEditMode = (id) => {
         </draggable>
       </div>
     </div>
+    <button @click="addItem">Add task</button>
+
     <!-- <div class="column">
         <h3 class="column__title">No Status</h3>
         <label>
