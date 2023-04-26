@@ -5,15 +5,7 @@ import AppTaskItem from "./components/AppTaskItem.vue";
 
 // import Button from "primevue/button";
 
-let columns = ref([
-  [
-    { name: "John", id: 1 },
-    { name: "Ivan", id: 2 },
-  ],
-  [{ name: "Joe", id: 3 }],
-  [],
-  [],
-]);
+let columns = ref([[], [], [], []]);
 let tasks = ref([]);
 let formIsOpen = ref(false);
 let editMode = ref(false);
@@ -101,6 +93,10 @@ const handleEditMode = (id) => {
 
 <template>
   <section>
+    <form>
+      <label for="taksName">Task Name</label>
+      <input type="text" name="" id="taskName" />
+    </form>
     <div class="container">
       <div class="column">
         <h3>No Started</h3>
