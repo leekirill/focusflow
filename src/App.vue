@@ -27,7 +27,6 @@ const addItem = () => {
   //   alert("Fill the inputs");
   //   return;
   // }
-
   // const newTask = {
   //   id: Math.floor(Math.random() * 100),
   //   taskName: formData.value.taskName,
@@ -36,7 +35,6 @@ const addItem = () => {
   //   editMode: false,
   //   checked: false,
   // };
-
   // if (editMode.value) {
   //   console.log(123);
   // }
@@ -45,7 +43,6 @@ const addItem = () => {
   // formData.value.taskName = null;
   // formData.value.taskDescription = null;
   // formData.value.taskPriority = null;
-
   // formIsOpen.value = !formIsOpen.value;
 };
 
@@ -93,10 +90,15 @@ const handleEditMode = (id) => {
 
 <template>
   <section>
-    <form>
-      <label for="taksName">Task Name</label>
-      <input type="text" name="" id="taskName" />
-    </form>
+    <teleport to="body">
+      <form v-show="formIsOpen">
+        <label for="name">Task Name</label>
+        <input type="text" name="" id="name" />
+        <label for="description">Description</label>
+        <textarea name="" id="description" />
+        <button>Button</button>
+      </form>
+    </teleport>
     <div class="container">
       <div class="column">
         <h3>No Started</h3>
@@ -165,7 +167,7 @@ const handleEditMode = (id) => {
         </draggable>
       </div>
     </div>
-    <button @click="addItem">Add task</button>
+    <button @click="openForm">Add task</button>
 
     <!-- <div class="column">
         <h3 class="column__title">No Status</h3>
@@ -238,6 +240,14 @@ const handleEditMode = (id) => {
 <style scoped lang="scss">
 ul {
   height: 100%;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  padding: 40px;
+  background: #fff;
 }
 .ghost {
   background: rgb(231, 231, 231);
