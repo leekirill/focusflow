@@ -1,48 +1,87 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import draggable from "vuedraggable";
 import AppTaskItem from "./components/AppTaskItem.vue";
+import AppModal from "./components/AppModal.vue";
 import Button from "primevue/button";
-import InputText from "primevue/inputtext";
-import Textarea from "primevue/textarea";
-import Dialog from "primevue/dialog";
-import Dropdown from "primevue/dropdown";
+import Toast from "primevue/toast";
+
+import { useToast } from "primevue/usetoast";
+
+const toast = useToast();
 
 let columns = ref([[], [], [], []]);
-let tasks = ref([]);
 let formIsOpen = ref(false);
 let editMode = ref(false);
-let priority = ref([{ name: "High" }, { name: "Medium" }, { name: "Low" }]);
+let errorClass = ref("");
 let formData = ref({
-  name: null,
-  description: null,
-  priority: null,
+  name: "",
+  description: "",
+  priority: {},
+  editMode: false,
+  completed: false,
 });
+
 // Добавляем задачу
 
 const openForm = () => {
+  errorClass.value = "";
   formIsOpen.value = !formIsOpen.value;
 };
 
 const addItem = () => {
-  columns.value[0].unshift({
+  // Валидаци поля name
+
+  if (formData.value.name.length === 0) {
+    errorClass.value = "p-invalid";
+    const message = () => {
+      toast.add({
+        severity: "error",
+        summary: "Error",
+        detail: "Please fill the inputs",
+        life: 3000,
+      });
+    };
+    message();
+    return;
+  }
+
+  // Объект задачи
+
+  let newTask = {
+    id: Math.floor(Math.random() * 100),
     name: formData.value.name,
     description: formData.value.description,
     priority: formData.value.priority,
-    id: Math.floor(Math.random() * 100),
-  });
-  formData.value = {
-    name: null,
-    description: null,
-    priority: null,
+    editMode: false,
+    completed: false,
   };
+
+  columns.value[0].unshift(newTask);
+
+  formData.value = {
+    name: "",
+    description: "",
+    priority: {},
+    editMode: false,
+    completed: false,
+  };
+
   formIsOpen.value = !formIsOpen.value;
 };
-// Валидаци полей
-// if (formData.value.taskName === null) {
-//   alert("Fill the inputs");
-//   return;
-// }
+
+// Отмечаем задачу
+
+const updateTask = (id) => {
+  columns.value.map((column) => {
+    column.filter((item) => {
+      if (item.id === id) {
+        item.completed === !item.completed;
+      }
+    });
+  });
+};
+
 // const newTask = {
 //   id: Math.floor(Math.random() * 100),
 //   taskName: formData.value.taskName,
@@ -105,42 +144,16 @@ const addItem = () => {
 
 <template>
   <Button label="Add task" @click="openForm" />
-
+  <Toast />
+  <teleport to="body">
+    <AppModal
+      :formIsOpen="formIsOpen"
+      :formData="formData"
+      :errorClass="errorClass"
+      :addItem="addItem"
+    />
+  </teleport>
   <section>
-    <teleport to="body">
-      <Dialog
-        header="New task"
-        v-model:visible="formIsOpen"
-        modal
-        :breakpoints="{ '960px': '75vw', '641px': '80vw' }"
-        :style="{ width: '50vw' }"
-      >
-        <div class="flex flex-column gap-4">
-          <label for="name">Task Name</label>
-          <InputText
-            id="name"
-            v-model="formData.name"
-            aria-describedby="task-name"
-          />
-          <label for="description">Description</label>
-          <Textarea id="description" v-model="formData.description" />
-          <Dropdown
-            v-model="formData.priority"
-            :options="priority"
-            optionLabel="name"
-            placeholder="Select a Priopity"
-            class="w-full md:w-14rem"
-          />
-
-          <!-- <small id="task-name"
-            >Enter your username to reset your password.</small
-          > -->
-        </div>
-        <template #footer>
-          <Button label="Add task" @click="addItem" />
-        </template>
-      </Dialog>
-    </teleport>
     <div class="container">
       <div class="column">
         <h3>No Started</h3>
@@ -153,10 +166,12 @@ const addItem = () => {
         >
           <template #item="{ element: task }">
             <app-task-item
-              class="column__item"
+              :name="task.name"
               :description="task.description"
               :priority="task.priority.name"
-              >{{ task.name }}
+              :completed="task.completed"
+              :updateTask="updateTask"
+            >
             </app-task-item>
           </template>
         </draggable>
@@ -171,7 +186,7 @@ const addItem = () => {
           ghost-class="ghost"
         >
           <template #item="{ element: task }">
-            <app-task-item class="column__item" :description="task.description"
+            <app-task-item :description="task.description"
               >{{ task.name }}
             </app-task-item>
           </template>
@@ -187,7 +202,7 @@ const addItem = () => {
           ghost-class="ghost"
         >
           <template #item="{ element: task }">
-            <app-task-item class="column__item" :description="task.description"
+            <app-task-item :description="task.description"
               >{{ task.name }}
             </app-task-item>
           </template>
@@ -203,7 +218,7 @@ const addItem = () => {
           ghost-class="ghost"
         >
           <template #item="{ element: task }">
-            <app-task-item class="column__item" :description="task.description"
+            <app-task-item :description="task.description"
               >{{ task.name }}
             </app-task-item>
           </template>
@@ -249,7 +264,7 @@ const addItem = () => {
         >
           <template #item="{ element: task }">
             <app-task-item
-              class="column__item"
+              
               :id="task.id"
               :taskName="task.taskName"
               :taskDescription="task.taskDescription"
@@ -283,6 +298,10 @@ ul {
   height: 100%;
 }
 
+h3 {
+  margin: 0 0 20px 0;
+}
+
 form {
   display: flex;
   flex-direction: column;
@@ -300,6 +319,11 @@ form {
 }
 .column {
   padding: 20px;
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
 }
 .column__item--form {
   display: flex;
