@@ -61,7 +61,7 @@ const isTaskDone = computed(() => {
 </script>
 
 <template>
-  <Card>
+  <Card class="card">
     <template #title>
       <div class="flex align-items-center">
         <label :class="isTaskDone">
@@ -123,6 +123,9 @@ li {
 
 .checked {
   text-decoration: line-through;
+}
+.card {
+  cursor: pointer;
 }
 // .item__bottom {
 //   flex-direction: column;

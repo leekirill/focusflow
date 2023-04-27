@@ -16,7 +16,8 @@ console.log(props.formIsOpen);
 <template>
   <Dialog
     header="New task"
-    v-model:visible="props.formIsOpen"
+    :visible="props.formIsOpen"
+    closeOnEscape="true"
     modal
     :breakpoints="{ '960px': '75vw', '641px': '80vw' }"
     :style="{ width: '50vw' }"
