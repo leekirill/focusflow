@@ -12,9 +12,8 @@ const props = defineProps([
   "priority",
   "completed",
   "updateTask",
+  "removeTask",
 ]);
-
-let completedTasks = ref();
 
 const tagColor = computed(() => {
   switch (props.priority) {
@@ -32,16 +31,16 @@ const tagColor = computed(() => {
     }
   }
 });
-console.log(
-  props.id,
-  props.name,
-  props.description,
-  props.priority,
-  props.editMode,
-  props.checked,
-  props.handleEditMode,
-  props.updateTask
-);
+// console.log(
+//   props.id,
+//   props.name,
+//   props.description,
+//   props.priority,
+//   props.editMode,
+//   props.checked,
+//   props.handleEditMode,
+//   props.updateTask
+// );
 
 // Время
 
@@ -55,19 +54,25 @@ const getCurrentDate = computed(() => {
   let today = new Date();
   return today.toLocaleDateString("en-US", options);
 });
+
+const isTaskDone = computed(() => {
+  return props.completed ? "checked" : "";
+});
 </script>
 
 <template>
   <Card>
     <template #title>
       <div class="flex align-items-center">
-        <Checkbox
-          inputId="checkbox"
-          v-model="completedTasks"
-          :value="id"
-          @input="updateTask(completedTasks)"
-        />
-        <label for="checkbox" class="ml-2">{{ props.name }}</label>
+        <label :class="isTaskDone">
+          <input
+            id="checkbox"
+            type="checkbox"
+            :checked="completed"
+            @input="updateTask(id)"
+          />
+          {{ props.name }}</label
+        >
       </div>
     </template>
 
@@ -89,7 +94,7 @@ const getCurrentDate = computed(() => {
             severity="secondary"
             text
             rounded
-            aria-label="Cancel"
+            aria-label="Edit"
             @click="handleEditMode(id)"
           ></Button>
           <Button
@@ -97,8 +102,8 @@ const getCurrentDate = computed(() => {
             severity="danger"
             text
             rounded
-            aria-label="Cancel"
-            @click="handleEditMode(id)"
+            aria-label="Remove"
+            @click="removeTask(id)"
           ></Button>
         </div>
         <small>{{ getCurrentDate }}</small>

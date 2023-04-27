@@ -71,42 +71,23 @@ const addItem = () => {
 
 // Отмечаем задачу
 
-const updateTask = (arr) => {
-  // columns.value.forEach((column) => {
-  //   column.filter((item) => {
-  //     if (item.id === id) {
-  //       item.completed = !item.completed;
-  //     }
-  //   });
-  // });
-
-  console.log(arr);
-  // columns.value.map((column) => {
-  //   column.filter((item) => {
-  //     if (item.id === id) {
-  //       item.completed = !item.completed;
-  //     }
-  //   });
-  // });
+const updateTask = (id) => {
+  columns.value.forEach((column) => {
+    column.filter((item) => {
+      if (item.id === id) {
+        item.completed = !item.completed;
+      }
+    });
+  });
 };
 
-// const newTask = {
-//   id: Math.floor(Math.random() * 100),
-//   taskName: formData.value.taskName,
-//   taskDescription: formData.value.taskDescription,
-//   taskPriority: formData.value.taskPriority,
-//   editMode: false,
-//   checked: false,
-// };
-// if (editMode.value) {
-//   console.log(123);
-// }
-// columns.value[0].unshift(newTask);
-// console.log(columns.value[0]);
-// formData.value.taskName = null;
-// formData.value.taskDescription = null;
-// formData.value.taskPriority = null;
-// formIsOpen.value = !formIsOpen.value;
+// Удаляем задачу
+
+const removeTask = (id) => {
+  columns.value = columns.value.map((column) => {
+    return column.filter((items) => items.id !== id);
+  });
+};
 
 // Редактируем задачу
 
@@ -139,12 +120,6 @@ const updateTask = (arr) => {
 //       task.editMode = !task.editMode;
 //     }
 //   });
-// };
-
-// Удаляем задачу
-
-// const removeTask = (id) => {
-//   tasks.value = tasks.value.filter((task) => task.id !== id);
 // };
 
 // return { count, tasks, addTask, removeTask };
@@ -180,7 +155,7 @@ const updateTask = (arr) => {
               :priority="task.priority.name"
               :completed="task.completed"
               :updateTask="updateTask"
-              :checked="checked"
+              :removeTask="removeTask"
             >
             </app-task-item>
           </template>
@@ -310,6 +285,7 @@ ul {
 
 h3 {
   margin: 0 0 20px 0;
+  text-align: center;
 }
 
 form {

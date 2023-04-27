@@ -29,12 +29,13 @@ console.log(props.formIsOpen);
           v-model="formData.name"
           aria-describedby="task-name"
           :class="errorClass"
+          @keydown.enter="addItem"
+          autofocus
         />
-        <small id="task-name" v-show="errorClass">Error</small>
       </div>
       <div class="flex flex-column gap-2">
         <label for="description">Description</label>
-        <Textarea id="description" v-model="formData.description" />
+        <Textarea id="description" v-model="formData.description" rows="10" />
       </div>
 
       <Dropdown

@@ -32,8 +32,8 @@ h3, ul {
 .column {
   width: 100%;
   overflow: hidden;
-  &:nth-child(even) {
-    background-color: rgb(234, 234, 234);
+  &:not(:last-child) {
+    border-right: 1px solid #ececec;
   }
   &__title {
     padding: 20px;
