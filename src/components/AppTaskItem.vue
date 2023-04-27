@@ -51,6 +51,7 @@ const getCurrentDate = computed(() => {
           <span>{{ props.description }}</span>
         </label>
         <div>
+          <span>{{ props.priority }}</span>
           <span>{{ getCurrentDate }}</span>
           <span>{{ taskPriority }}</span>
         </div>
@@ -58,16 +59,20 @@ const getCurrentDate = computed(() => {
     </template>
     <template #footer>
       <Button
-        label="Edit"
+        icon="pi pi-pencil"
         severity="secondary"
-        outlined
+        text
+        rounded
+        aria-label="Cancel"
         @click="handleEditMode(id)"
       ></Button>
       <Button
-        label="Remove"
+        icon="pi pi-trash"
         severity="danger"
         text
-        @click="removeTask(id)"
+        rounded
+        aria-label="Cancel"
+        @click="handleEditMode(id)"
       ></Button>
     </template>
   </Card>

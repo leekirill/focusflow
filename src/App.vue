@@ -6,11 +6,13 @@ import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import Textarea from "primevue/textarea";
 import Dialog from "primevue/dialog";
+import Dropdown from "primevue/dropdown";
 
 let columns = ref([[], [], [], []]);
 let tasks = ref([]);
 let formIsOpen = ref(false);
 let editMode = ref(false);
+let priority = ref([{ name: "High" }, { name: "Medium" }, { name: "Low" }]);
 let formData = ref({
   name: null,
   description: null,
@@ -26,6 +28,7 @@ const addItem = () => {
   columns.value[0].unshift({
     name: formData.value.name,
     description: formData.value.description,
+    priority: formData.value.priority,
     id: Math.floor(Math.random() * 100),
   });
   formData.value = {
@@ -109,22 +112,29 @@ const addItem = () => {
         header="New task"
         v-model:visible="formIsOpen"
         modal
-        :breakpoints="{ '960px': '75vw', '641px': '100vw' }"
+        :breakpoints="{ '960px': '75vw', '641px': '80vw' }"
+        :style="{ width: '50vw' }"
       >
-        <div class="flex flex-column gap-2">
+        <div class="flex flex-column gap-4">
           <label for="name">Task Name</label>
           <InputText
             id="name"
             v-model="formData.name"
             aria-describedby="task-name"
           />
+          <label for="description">Description</label>
+          <Textarea id="description" v-model="formData.description" />
+          <Dropdown
+            v-model="formData.priority"
+            :options="priority"
+            optionLabel="name"
+            placeholder="Select a Priopity"
+            class="w-full md:w-14rem"
+          />
+
           <!-- <small id="task-name"
             >Enter your username to reset your password.</small
           > -->
-        </div>
-        <div class="flex flex-column gap-2">
-          <label for="description">Description</label>
-          <Textarea id="description" v-model="formData.description" />
         </div>
         <template #footer>
           <Button label="Add task" @click="addItem" />
@@ -142,7 +152,10 @@ const addItem = () => {
           ghost-class="ghost"
         >
           <template #item="{ element: task }">
-            <app-task-item class="column__item" :description="task.description"
+            <app-task-item
+              class="column__item"
+              :description="task.description"
+              :priority="task.priority.name"
               >{{ task.name }}
             </app-task-item>
           </template>
