@@ -14,7 +14,7 @@ const props = defineProps([
   "updateTask",
 ]);
 
-let checked = ref();
+let completedTasks = ref();
 
 const tagColor = computed(() => {
   switch (props.priority) {
@@ -62,10 +62,10 @@ const getCurrentDate = computed(() => {
     <template #title>
       <div class="flex align-items-center">
         <Checkbox
-          v-model="checked"
           inputId="checkbox"
-          value="name"
-          @input="updateTask(123)"
+          v-model="completedTasks"
+          :value="id"
+          @input="updateTask(completedTasks)"
         />
         <label for="checkbox" class="ml-2">{{ props.name }}</label>
       </div>
@@ -114,6 +114,10 @@ li {
   &:active {
     cursor: pointer;
   }
+}
+
+.checked {
+  text-decoration: line-through;
 }
 // .item__bottom {
 //   flex-direction: column;

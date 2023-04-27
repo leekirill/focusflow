@@ -21,7 +21,6 @@ let formData = ref({
   editMode: false,
   completed: false,
 });
-
 // Добавляем задачу
 
 const openForm = () => {
@@ -72,14 +71,23 @@ const addItem = () => {
 
 // Отмечаем задачу
 
-const updateTask = (id) => {
-  columns.value.map((column) => {
-    column.filter((item) => {
-      if (item.id === id) {
-        item.completed === !item.completed;
-      }
-    });
-  });
+const updateTask = (arr) => {
+  // columns.value.forEach((column) => {
+  //   column.filter((item) => {
+  //     if (item.id === id) {
+  //       item.completed = !item.completed;
+  //     }
+  //   });
+  // });
+
+  console.log(arr);
+  // columns.value.map((column) => {
+  //   column.filter((item) => {
+  //     if (item.id === id) {
+  //       item.completed = !item.completed;
+  //     }
+  //   });
+  // });
 };
 
 // const newTask = {
@@ -166,11 +174,13 @@ const updateTask = (id) => {
         >
           <template #item="{ element: task }">
             <app-task-item
+              :id="task.id"
               :name="task.name"
               :description="task.description"
               :priority="task.priority.name"
               :completed="task.completed"
               :updateTask="updateTask"
+              :checked="checked"
             >
             </app-task-item>
           </template>
