@@ -2,17 +2,19 @@
 import { ref } from "vue";
 import draggable from "vuedraggable";
 import AppTaskItem from "./components/AppTaskItem.vue";
-
-// import Button from "primevue/button";
+import Button from "primevue/button";
+import InputText from "primevue/inputtext";
+import Textarea from "primevue/textarea";
+import Dialog from "primevue/dialog";
 
 let columns = ref([[], [], [], []]);
 let tasks = ref([]);
 let formIsOpen = ref(false);
 let editMode = ref(false);
 let formData = ref({
-  taskName: null,
-  taskDescription: null,
-  taskPriority: null,
+  name: null,
+  description: null,
+  priority: null,
 });
 // Добавляем задачу
 
@@ -21,30 +23,40 @@ const openForm = () => {
 };
 
 const addItem = () => {
-  columns.value[0].push({ name: "Newbie", id: 3 });
-  // Валидаци полей
-  // if (formData.value.taskName === null) {
-  //   alert("Fill the inputs");
-  //   return;
-  // }
-  // const newTask = {
-  //   id: Math.floor(Math.random() * 100),
-  //   taskName: formData.value.taskName,
-  //   taskDescription: formData.value.taskDescription,
-  //   taskPriority: formData.value.taskPriority,
-  //   editMode: false,
-  //   checked: false,
-  // };
-  // if (editMode.value) {
-  //   console.log(123);
-  // }
-  // columns.value[0].unshift(newTask);
-  // console.log(columns.value[0]);
-  // formData.value.taskName = null;
-  // formData.value.taskDescription = null;
-  // formData.value.taskPriority = null;
-  // formIsOpen.value = !formIsOpen.value;
+  columns.value[0].unshift({
+    name: formData.value.name,
+    description: formData.value.description,
+    id: Math.floor(Math.random() * 100),
+  });
+  formData.value = {
+    name: null,
+    description: null,
+    priority: null,
+  };
+  formIsOpen.value = !formIsOpen.value;
 };
+// Валидаци полей
+// if (formData.value.taskName === null) {
+//   alert("Fill the inputs");
+//   return;
+// }
+// const newTask = {
+//   id: Math.floor(Math.random() * 100),
+//   taskName: formData.value.taskName,
+//   taskDescription: formData.value.taskDescription,
+//   taskPriority: formData.value.taskPriority,
+//   editMode: false,
+//   checked: false,
+// };
+// if (editMode.value) {
+//   console.log(123);
+// }
+// columns.value[0].unshift(newTask);
+// console.log(columns.value[0]);
+// formData.value.taskName = null;
+// formData.value.taskDescription = null;
+// formData.value.taskPriority = null;
+// formIsOpen.value = !formIsOpen.value;
 
 // Редактируем задачу
 
@@ -53,22 +65,22 @@ const addItem = () => {
 //   console.log(id)
 // }
 
-const handleEditMode = (id) => {
-  formIsOpen.value = !formIsOpen.value;
-  editMode.value = !editMode.value;
-  tasks.value.filter((task) => {
-    if (task.id === id) {
-      formData.value.taskName = task.taskName;
-      formData.value.taskDescription = task.taskDescription;
-      formData.value.taskPriority = task.taskPriority;
-    }
-  });
-  // tasks.value.filter((task) => {
-  //   if (task.id === id) {
-  //     task.editMode = !task.editMode;
-  //   }
-  // });
-};
+// const handleEditMode = (id) => {
+//   formIsOpen.value = !formIsOpen.value;
+//   editMode.value = !editMode.value;
+//   tasks.value.filter((task) => {
+//     if (task.id === id) {
+//       formData.value.taskName = task.taskName;
+//       formData.value.taskDescription = task.taskDescription;
+//       formData.value.taskPriority = task.taskPriority;
+//     }
+// });
+// tasks.value.filter((task) => {
+//   if (task.id === id) {
+//     task.editMode = !task.editMode;
+//   }
+// });
+// };
 
 // const saveEditedTaskName = (id, value) => {
 //   tasks.value.filter((task) => {
@@ -89,15 +101,35 @@ const handleEditMode = (id) => {
 </script>
 
 <template>
+  <Button label="Add task" @click="openForm" />
+
   <section>
     <teleport to="body">
-      <form v-show="formIsOpen">
-        <label for="name">Task Name</label>
-        <input type="text" name="" id="name" />
-        <label for="description">Description</label>
-        <textarea name="" id="description" />
-        <button>Button</button>
-      </form>
+      <Dialog
+        header="New task"
+        v-model:visible="formIsOpen"
+        modal
+        :breakpoints="{ '960px': '75vw', '641px': '100vw' }"
+      >
+        <div class="flex flex-column gap-2">
+          <label for="name">Task Name</label>
+          <InputText
+            id="name"
+            v-model="formData.name"
+            aria-describedby="task-name"
+          />
+          <!-- <small id="task-name"
+            >Enter your username to reset your password.</small
+          > -->
+        </div>
+        <div class="flex flex-column gap-2">
+          <label for="description">Description</label>
+          <Textarea id="description" v-model="formData.description" />
+        </div>
+        <template #footer>
+          <Button label="Add task" @click="addItem" />
+        </template>
+      </Dialog>
     </teleport>
     <div class="container">
       <div class="column">
@@ -110,8 +142,8 @@ const handleEditMode = (id) => {
           ghost-class="ghost"
         >
           <template #item="{ element: task }">
-            <app-task-item class="column__item"
-              >{{ task.name }} {{ task.id }}
+            <app-task-item class="column__item" :description="task.description"
+              >{{ task.name }}
             </app-task-item>
           </template>
         </draggable>
@@ -126,8 +158,8 @@ const handleEditMode = (id) => {
           ghost-class="ghost"
         >
           <template #item="{ element: task }">
-            <app-task-item class="column__item"
-              >{{ task.name }} {{ task.id }}
+            <app-task-item class="column__item" :description="task.description"
+              >{{ task.name }}
             </app-task-item>
           </template>
         </draggable>
@@ -139,12 +171,11 @@ const handleEditMode = (id) => {
           :itemKey="id"
           group="tasks"
           tag="ul"
-          class="column"
           ghost-class="ghost"
         >
           <template #item="{ element: task }">
-            <app-task-item class="column__item"
-              >{{ task.name }} {{ task.id }}
+            <app-task-item class="column__item" :description="task.description"
+              >{{ task.name }}
             </app-task-item>
           </template>
         </draggable>
@@ -156,19 +187,16 @@ const handleEditMode = (id) => {
           :itemKey="id"
           group="tasks"
           tag="ul"
-          class="column"
           ghost-class="ghost"
         >
           <template #item="{ element: task }">
-            <app-task-item class="column__item"
-              >{{ task.name }} {{ task.id }}
+            <app-task-item class="column__item" :description="task.description"
+              >{{ task.name }}
             </app-task-item>
           </template>
         </draggable>
       </div>
     </div>
-    <button @click="openForm">Add task</button>
-
     <!-- <div class="column">
         <h3 class="column__title">No Status</h3>
         <label>
@@ -248,9 +276,17 @@ form {
   width: 500px;
   padding: 40px;
   background: #fff;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .ghost {
   background: rgb(231, 231, 231);
+}
+.column {
+  padding: 20px;
 }
 .column__item--form {
   display: flex;

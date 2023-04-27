@@ -2,21 +2,22 @@
 import { ref, computed } from "vue";
 import Card from "primevue/card";
 import Button from "primevue/button";
+import Checkbox from "primevue/checkbox";
 
 const props = defineProps([
   "id",
-  "taskName",
-  "taskDescription",
-  "taskPriority",
+  "name",
+  "description",
+  "priority",
   "editMode",
   "checked",
   "handleEditMode",
 ]);
 console.log(
   props.id,
-  props.taskName,
-  props.taskDescription,
-  props.taskPriority,
+  props.name,
+  props.description,
+  props.priority,
   props.editMode,
   props.checked,
   props.handleEditMode
@@ -36,12 +37,26 @@ const getCurrentDate = computed(() => {
 
 <template>
   <Card>
-    <input type="checkbox" id="checkbox" />
-    <template #title
-      ><label for="checkbox"><slot /></label
-    ></template>
+    <template #title>
+      <div class="flex align-items-center">
+        <input id="checkbox" type="checkbox" />
+        <label for="checkbox" class="ml-2"> <slot /> </label>
+      </div>
+    </template>
 
     <template #content>
+      <div class="item__bottom">
+        <label>
+          {{ props.description && "Description:" }}
+          <span>{{ props.description }}</span>
+        </label>
+        <div>
+          <span>{{ getCurrentDate }}</span>
+          <span>{{ taskPriority }}</span>
+        </div>
+      </div>
+    </template>
+    <template #footer>
       <Button
         label="Edit"
         severity="secondary"
@@ -54,16 +69,6 @@ const getCurrentDate = computed(() => {
         text
         @click="removeTask(id)"
       ></Button>
-      <div class="item__bottom">
-        <label>
-          {{ props.taskDescription && "Description:" }}
-          <span>{{ props.taskDescription }}</span>
-        </label>
-        <div>
-          <span>{{ getCurrentDate }}</span>
-          <span>{{ taskPriority }}</span>
-        </div>
-      </div>
     </template>
   </Card>
 </template>
