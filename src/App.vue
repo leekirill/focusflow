@@ -3,6 +3,7 @@ import { ref, computed } from "vue";
 import draggable from "vuedraggable";
 import AppTaskItem from "./components/AppTaskItem.vue";
 import AppModal from "./components/AppModal.vue";
+import AppHeader from "./components/AppHeader.vue";
 import Button from "primevue/button";
 import Toast from "primevue/toast";
 
@@ -126,7 +127,7 @@ const removeTask = (id) => {
 </script>
 
 <template>
-  <Button label="Add task" @click="openForm" />
+  <AppHeader @openForm="openForm" />
   <Toast />
   <teleport to="body">
     <AppModal

@@ -49,7 +49,7 @@ console.log(props.formIsOpen);
     </div>
 
     <template #footer>
-      <Button label="Add task" @click="addItem" />
+      <Button label="Add task" icon="pi pi-plus" @click="addItem" />
     </template>
   </Dialog>
 </template>
