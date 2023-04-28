@@ -13,6 +13,7 @@ const props = defineProps([
   "completed",
   "updateTask",
   "removeTask",
+  "editTask",
 ]);
 
 const tagColor = computed(() => {
@@ -95,7 +96,7 @@ const isTaskDone = computed(() => {
             text
             rounded
             aria-label="Edit"
-            @click="handleEditMode(id)"
+            @click="editTask(id)"
           ></Button>
           <Button
             icon="pi pi-trash"

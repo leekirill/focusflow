@@ -24,12 +24,16 @@ let formData = ref({
 });
 // Добавляем задачу
 
-const openForm = () => {
+const handleModal = () => {
   errorClass.value = "";
   formIsOpen.value = !formIsOpen.value;
 };
 
 const addItem = () => {
+  if (editMode === true) {
+    editMode.value = !editMode.value;
+  }
+  // editMode.value = !editMode.value;
   // Валидаци поля name
 
   if (formData.value.name.length === 0) {
@@ -92,10 +96,20 @@ const removeTask = (id) => {
 
 // Редактируем задачу
 
-// const handleEditForm = (id) => {
-//   formIsOpen.value = !formIsOpen.value
-//   console.log(id)
-// }
+const handleEditForm = (id) => {
+  formIsOpen.value = !formIsOpen.value;
+  editMode.value = !editMode.value;
+  columns.value.map((column) => {
+    return column.filter((items) => {
+      if (items.id === id) {
+        formData.value.name = items.name;
+        formData.value.description = items.description;
+        formData.value.priority = items.priority;
+        formData.value.editMode = true;
+      }
+    });
+  });
+};
 
 // const handleEditMode = (id) => {
 //   formIsOpen.value = !formIsOpen.value;
@@ -127,17 +141,21 @@ const removeTask = (id) => {
 </script>
 
 <template>
-  <AppHeader @openForm="openForm" />
+  <AppHeader @openForm="handleModal" />
   <Toast />
+
   <teleport to="body">
     <AppModal
       :formIsOpen="formIsOpen"
       :formData="formData"
       :errorClass="errorClass"
       :addItem="addItem"
+      :editMode="editMode"
     />
   </teleport>
   <section>
+    {{ formIsOpen }}
+
     <div class="container">
       <div class="column">
         <h3>No Started</h3>
@@ -157,6 +175,7 @@ const removeTask = (id) => {
               :completed="task.completed"
               :updateTask="updateTask"
               :removeTask="removeTask"
+              :editTask="handleEditForm"
             >
             </app-task-item>
           </template>

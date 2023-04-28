@@ -1,23 +1,34 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import InputText from "primevue/inputtext";
 import Textarea from "primevue/textarea";
 import Dialog from "primevue/dialog";
 import Dropdown from "primevue/dropdown";
 import Button from "primevue/button";
 
-const props = defineProps(["formIsOpen", "formData", "addItem", "errorClass"]);
+const props = defineProps([
+  "formIsOpen",
+  "formData",
+  "addItem",
+  "errorClass",
+  "editMode",
+]);
+// const emit = defineProps(['handleModal'])
+
+// // const handleModal = () => {
+// //   emit('handleModal', )
+// // }
 
 let priority = ref([{ name: "High" }, { name: "Medium" }, { name: "Low" }]);
-
-console.log(props.formIsOpen);
+let editTitle = computed(() => {
+  return props.editMode ? "Edit" : "New task";
+});
 </script>
 
 <template>
   <Dialog
-    header="New task"
-    :visible="props.formIsOpen"
-    closeOnEscape="true"
+    :header="editTitle"
+    :visible="formIsOpen"
     modal
     :breakpoints="{ '960px': '75vw', '641px': '80vw' }"
     :style="{ width: '50vw' }"
