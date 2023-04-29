@@ -164,16 +164,6 @@ watchEffect(() => {
 //     });
 //   });
 // };
-
-// onUpdated(offItems);
-
-// onMounted(() => {
-//   window.addEventListener("keydown", (event) => {
-//     if (event.key === "Enter") {
-//       handleModal();
-//     }
-//   });
-// });
 </script>
 
 <template>
