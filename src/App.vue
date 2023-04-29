@@ -1,20 +1,51 @@
 <script setup>
-import { ref, computed, onMounted, onUpdated, watchEffect } from "vue";
+import {
+  ref,
+  computed,
+  onMounted,
+  onUpdated,
+  watchEffect,
+  defineComponent,
+} from "vue";
+
 import draggable from "vuedraggable";
 import AppTaskItem from "./components/AppTaskItem.vue";
 import AppModal from "./components/AppModal.vue";
 import AppHeader from "./components/AppHeader.vue";
 import Button from "primevue/button";
 import Toast from "primevue/toast";
+import Menu from "primevue/menu";
 
 import { useToast } from "primevue/usetoast";
-
 const toast = useToast();
 
 let columns = ref([[], [], [], []]);
 let formIsOpen = ref(false);
 let editMode = ref(false);
 let errorClass = ref("");
+let selectedSortingName = ref({ name: "desc", id: 0 });
+let sortingItems = ref([
+  {
+    label: "desc",
+    command: () => {
+      selectedSortingName.value.id = 0;
+      selectedSortingName.value.name = "desc";
+      columns.value = columns.value.map((column) => {
+        return column.sort((a, b) => a.id - b.id);
+      });
+    },
+  },
+  {
+    label: "asc",
+    command: () => {
+      selectedSortingName.value.id = 1;
+      selectedSortingName.value.name = "asc";
+      columns.value = columns.value.map((column) => {
+        return column.sort((a, b) => b.id - a.id);
+      });
+    },
+  },
+]);
 
 let formData = ref({
   name: "",
@@ -22,6 +53,7 @@ let formData = ref({
   priority: {},
   completed: false,
 });
+
 // Добавляем задачу
 
 const handleModal = () => {
@@ -135,12 +167,9 @@ const saveEditedTaskName = () => {
   formIsOpen.value = !formIsOpen.value;
 };
 
+// Completed когда в Done
+
 watchEffect(() => {
-  // columns.value.forEach((column) => {
-  //   column.map((items) => {
-  //     items.completed = false;
-  //   });
-  // });
   for (let i = 0; i < columns.value.length - 1; i++) {
     columns.value[i].map((items) => {
       items.completed = false;
@@ -149,11 +178,30 @@ watchEffect(() => {
   columns.value[3].map((items) => {
     items.completed = true;
   });
+
   // columns.value[3].map((column) => {
   //   column.completed = true;
   // });
 });
 
+const sorting = () => {
+  switch (selectedSortingName.id) {
+    case 0: {
+      columns.value = columns.value.map((column) => {
+        console.log(column.sort((a, b) => a.name - b.name));
+      });
+    }
+    case 1: {
+      columns.value = columns.value.map((column) => {
+        column.sort((a, b) => {
+          return b.name - a.name;
+        });
+      });
+    }
+    default:
+      break;
+  }
+};
 // const replaceCompletedTask = (id) => {
 //   columns.value = columns.value.map((column) => {
 //     return column.filter((items) => {
@@ -164,10 +212,20 @@ watchEffect(() => {
 //     });
 //   });
 // };
+
+// Сортировка
+
+//// хендлер меню
+
+const menu = ref();
+const toggle = (event) => {
+  menu.value.toggle(event);
+  console.log(menu.value);
+};
 </script>
 
 <template>
-  <AppHeader @openForm="handleModal" />
+  <AppHeader />
   <Toast />
 
   <teleport to="body">
@@ -181,169 +239,126 @@ watchEffect(() => {
     />
   </teleport>
   <section>
-    <div class="container">
-      <div class="column">
-        <h3>No Started</h3>
-        <draggable
-          :list="columns[0]"
-          itemKey="id"
-          group="tasks"
-          tag="ul"
-          ghost-class="ghost"
-        >
-          <template #item="{ element: task }">
-            <app-task-item
-              :id="task.id"
-              :name="task.name"
-              :description="task.description"
-              :priority="task.priority.name"
-              :completed="task.completed"
-              :updateTask="updateTask"
-              :removeTask="removeTask"
-              :editTask="handleEditForm"
-            >
-            </app-task-item>
-          </template>
-        </draggable>
+    <div class="panel">
+      <div class="panel__header">
+        <Button label="Add task" icon="pi pi-plus" @click="handleModal" />
+        <!-- <div class="card flex justify-content-center">
+            <Menu :model="sortingItems" label="name" />
+          </div> -->
+        <div class="card flex justify-content-center align-items-center">
+          <span>Sorting by: </span>
+          <Button
+            type="button"
+            :label="selectedSortingName.name"
+            @click="toggle"
+            aria-haspopup="true"
+            aria-controls="overlay_menu"
+            link
+          />
+          <Menu ref="menu" :id="id" :model="sortingItems" :popup="true" />
+          <Toast />
+        </div>
+        <!-- <span>Sorting</span> -->
       </div>
-      <div class="column">
-        <h3>No Completed</h3>
-        <draggable
-          :list="columns[1]"
-          itemKey="id"
-          group="tasks"
-          tag="ul"
-          ghost-class="ghost"
-        >
-          <template #item="{ element: task }">
-            <app-task-item
-              :id="task.id"
-              :name="task.name"
-              :description="task.description"
-              :priority="task.priority.name"
-              :completed="task.completed"
-              :updateTask="updateTask"
-              :removeTask="removeTask"
-              :editTask="handleEditForm"
-            >
-            </app-task-item>
-          </template>
-        </draggable>
-      </div>
-      <div class="column">
-        <h3>In Progress</h3>
-        <draggable
-          :list="columns[2]"
-          itemKey="id"
-          group="tasks"
-          tag="ul"
-          ghost-class="ghost"
-        >
-          <template #item="{ element: task }">
-            <app-task-item
-              :id="task.id"
-              :name="task.name"
-              :description="task.description"
-              :priority="task.priority.name"
-              :completed="task.completed"
-              :updateTask="updateTask"
-              :removeTask="removeTask"
-              :editTask="handleEditForm"
-            >
-            </app-task-item>
-          </template>
-        </draggable>
-      </div>
-      <div class="column">
-        <h3>Done</h3>
-        <draggable
-          :list="columns[3]"
-          itemKey="id"
-          group="tasks"
-          tag="ul"
-          ghost-class="ghost"
-        >
-          <template #item="{ element: task }">
-            <app-task-item
-              :id="task.id"
-              :name="task.name"
-              :description="task.description"
-              :priority="task.priority.name"
-              :completed="task.completed"
-              :updateTask="updateTask"
-              :removeTask="removeTask"
-              :editTask="handleEditForm"
-            >
-            </app-task-item>
-          </template>
-        </draggable>
+      <div class="container">
+        <div class="column">
+          <h4>No Started</h4>
+          <draggable
+            :list="columns[0]"
+            itemKey="id"
+            group="tasks"
+            tag="ul"
+            ghost-class="ghost"
+          >
+            <template #item="{ element: task }">
+              <app-task-item
+                :id="task.id"
+                :name="task.name"
+                :description="task.description"
+                :priority="task.priority.name"
+                :completed="task.completed"
+                :updateTask="updateTask"
+                :removeTask="removeTask"
+                :editTask="handleEditForm"
+              >
+              </app-task-item>
+            </template>
+          </draggable>
+        </div>
+        <div class="column">
+          <h4>No Completed</h4>
+          <draggable
+            :list="columns[1]"
+            itemKey="id"
+            group="tasks"
+            tag="ul"
+            ghost-class="ghost"
+          >
+            <template #item="{ element: task }">
+              <app-task-item
+                :id="task.id"
+                :name="task.name"
+                :description="task.description"
+                :priority="task.priority.name"
+                :completed="task.completed"
+                :updateTask="updateTask"
+                :removeTask="removeTask"
+                :editTask="handleEditForm"
+              >
+              </app-task-item>
+            </template>
+          </draggable>
+        </div>
+        <div class="column">
+          <h4>In Progress</h4>
+          <draggable
+            :list="columns[2]"
+            itemKey="id"
+            group="tasks"
+            tag="ul"
+            ghost-class="ghost"
+          >
+            <template #item="{ element: task }">
+              <app-task-item
+                :id="task.id"
+                :name="task.name"
+                :description="task.description"
+                :priority="task.priority.name"
+                :completed="task.completed"
+                :updateTask="updateTask"
+                :removeTask="removeTask"
+                :editTask="handleEditForm"
+              >
+              </app-task-item>
+            </template>
+          </draggable>
+        </div>
+        <div class="column">
+          <h4>Done</h4>
+          <draggable
+            :list="columns[3]"
+            itemKey="id"
+            group="tasks"
+            tag="ul"
+            ghost-class="ghost"
+          >
+            <template #item="{ element: task }">
+              <app-task-item
+                :id="task.id"
+                :name="task.name"
+                :description="task.description"
+                :priority="task.priority.name"
+                :completed="task.completed"
+                :updateTask="updateTask"
+                :removeTask="removeTask"
+                :editTask="handleEditForm"
+              >
+              </app-task-item>
+            </template>
+          </draggable>
+        </div>
       </div>
     </div>
-    <!-- <div class="column">
-        <h3 class="column__title">No Status</h3>
-        <label>
-         <input type="text" v-model.trim="taskName" @keydown.enter="addTask" /> -->
-    <!-- <button @click="openForm">
-            {{ formIsOpen ? "Close" : "Add todo" }}
-          </button>
-        </label>
-        <div class="column__item--form" v-show="formIsOpen">
-          <form type="submit" @submit.prevent="addItem">
-            <div class="forms">
-              <label for="taskName">Task name</label>
-              <input type="text" id="taskName" v-model="formData.taskName" />
-              <label for="taskDescription">Description</label>
-              <textarea
-                id="taskDescription"
-                v-model="formData.taskDescription"
-              />
-              <label>Priority</label>
-              <select v-model="formData.taskPriority">
-                <option value="high">high</option>
-                <option value="medium">medium</option>
-                <option value="low">low</option>
-              </select>
-            </div>
-            <button>Button</button>
-          </form>
-        </div> -->
-
-    <!-- <draggable
-          v-model="columns[1]"
-          tag="ul"
-          item-key="id"
-          class="column__list"
-          drag-class="drag"
-          ghost-class="ghost"
-        >
-          <template #item="{ element: task }">
-            <app-task-item
-              
-              :id="task.id"
-              :taskName="task.taskName"
-              :taskDescription="task.taskDescription"
-              :taskPriority="task.taskPriority"
-              :editMode="task.editMode"
-              :checked="task.checked"
-              >{{ task.taskName }}
-            </app-task-item>
-          </template>
-        </draggable> -->
-    <!-- </div> -->
-
-    <!-- <div class="column">
-        <h3 class="column__title">Not started</h3>
-        <ul class="column__list"></ul>
-      </div>
-      <div class="column">
-        <h3 class="column__title">In progress</h3>
-        <ul class="column__list"></ul>
-      </div>
-      <div class="column">
-        <h3 class="column__title">Completed</h3>
-        <ul class="column__list"></ul>
-      </div> -->
-    <!-- </div> -->
   </section>
 </template>
 
@@ -352,9 +367,8 @@ ul {
   height: 100%;
 }
 
-h3 {
+h4 {
   margin: 0 0 20px 0;
-  text-align: center;
 }
 
 form {
@@ -373,7 +387,7 @@ form {
   background: rgb(231, 231, 231);
 }
 .column {
-  padding: 20px;
+  padding: 0px 30px 30px 30px;
   ul {
     display: flex;
     flex-direction: column;

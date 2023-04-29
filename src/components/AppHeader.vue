@@ -1,17 +1,15 @@
 <script setup>
 import Button from "primevue/button";
-
-const emit = defineEmits(["openForm"]);
-
-const handleModal = () => {
-  emit("openForm");
-};
+import InputText from "primevue/inputtext";
 </script>
 
 <template>
   <header class="header">
     <div class="header__left">
-      <Button label="Add task" icon="pi pi-plus" @click="handleModal" />
+      <span class="p-input-icon-left">
+        <i class="pi pi-search" />
+        <InputText v-model="value1" placeholder="Search" />
+      </span>
     </div>
     <div class="header__middle">
       <div class="logo">
@@ -41,6 +39,9 @@ const handleModal = () => {
     gap: 8px;
   }
   .logo {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
     span {
       font-size: 30px;
       font-weight: 700;

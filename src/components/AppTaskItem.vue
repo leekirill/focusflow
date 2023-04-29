@@ -78,7 +78,6 @@ const isTaskDone = computed(() => {
         <!-- </label> -->
       </div>
     </template>
-
     <template #content>
       <p>{{ props.description }}</p>
       <Tag v-show="priority" :value="priority" :severity="tagColor" />

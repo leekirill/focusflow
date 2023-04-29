@@ -12,9 +12,7 @@ h3, ul {
   margin: 0;
 }
 
-.container {
-  display: flex;
-  justify-content: space-between;
+.panel {
   max-width: 1440px;
   width: 100%;
   margin: 0 auto;
@@ -22,18 +20,27 @@ h3, ul {
   overflow: hidden;
   background-color: #fff;
 
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    padding: 30px;
+  }
+
   // position: absolute;
   // top: 50%;
   // left: 50%;
   // transform: translate(-50%, -50%);
 }
+.container {
+  display: flex;
+}
 
 .column {
   width: 100%;
   overflow: hidden;
-  &:not(:last-child) {
-    border-right: 1px solid #ececec;
-  }
+  // &:not(:last-child) {
+  //   border-right: 1px solid #ececec;
+  // }
   &__title {
     padding: 20px;
     background-color: #f7f7f7;
