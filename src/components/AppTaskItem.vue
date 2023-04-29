@@ -16,6 +16,8 @@ const props = defineProps([
   "editTask",
 ]);
 
+let completed = ref();
+
 const tagColor = computed(() => {
   switch (props.priority) {
     case "High": {
@@ -32,32 +34,24 @@ const tagColor = computed(() => {
     }
   }
 });
-// console.log(
-//   props.id,
-//   props.name,
-//   props.description,
-//   props.priority,
-//   props.editMode,
-//   props.checked,
-//   props.handleEditMode,
-//   props.updateTask
-// );
 
 // Время
 
-const getCurrentDate = computed(() => {
+let getCurrentDate = computed(() => {
   let options = {
     weekday: "long",
-    year: "numeric",
     month: "long",
     day: "2-digit",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: false,
   };
   let today = new Date();
   return today.toLocaleDateString("en-US", options);
 });
 
 const isTaskDone = computed(() => {
-  return props.completed ? "checked" : "";
+  return props.completed ? "checked" : "ml-2";
 });
 </script>
 
@@ -65,25 +59,28 @@ const isTaskDone = computed(() => {
   <Card class="card">
     <template #title>
       <div class="flex align-items-center">
-        <label :class="isTaskDone">
-          <input
+        <!-- <label :class="isTaskDone"> -->
+        <!-- <input
             id="checkbox"
             type="checkbox"
             :checked="completed"
             @input="updateTask(id)"
-          />
-          {{ props.name }}</label
-        >
+          /> -->
+        <Checkbox
+          v-model="completed"
+          :inputId="id"
+          :value="id"
+          @input="updateTask(id)"
+        />
+        <label :for="id" :class="`${isTaskDone} ml-2`"> {{ props.name }}</label>
+
+        <!-- </label> -->
       </div>
     </template>
 
     <template #content>
-      <div class="item__bottom">
-        <p>{{ props.description }}</p>
-        <div>
-          <Tag v-show="priority" :value="priority" :severity="tagColor" />
-        </div>
-      </div>
+      <p>{{ props.description }}</p>
+      <Tag v-show="priority" :value="priority" :severity="tagColor" />
     </template>
     <template #footer>
       <div
@@ -124,6 +121,7 @@ li {
 
 .checked {
   text-decoration: line-through;
+  opacity: 0.4;
 }
 .card {
   cursor: pointer;

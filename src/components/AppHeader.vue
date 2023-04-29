@@ -3,7 +3,7 @@ import Button from "primevue/button";
 
 const emit = defineEmits(["openForm"]);
 
-const handleModal = (e) => {
+const handleModal = () => {
   emit("openForm");
 };
 </script>
@@ -11,10 +11,12 @@ const handleModal = (e) => {
 <template>
   <header class="header">
     <div class="header__left">
+      <Button label="Add task" icon="pi pi-plus" @click="handleModal" />
+    </div>
+    <div class="header__middle">
       <div class="logo">
         <span>FocusFlow</span>
       </div>
-      <Button label="Add task" icon="pi pi-plus" @click="handleModal" />
     </div>
     <div class="header__right">
       <Button label="Sign up" icon="pi pi-user" outlined />
@@ -33,16 +35,16 @@ const handleModal = (e) => {
   &__left {
     display: inherit;
     gap: 20px;
-    .logo {
-      span {
-        font-size: 30px;
-        font-weight: 700;
-      }
-    }
   }
   &__right {
     display: inherit;
     gap: 8px;
+  }
+  .logo {
+    span {
+      font-size: 30px;
+      font-weight: 700;
+    }
   }
 }
 </style>

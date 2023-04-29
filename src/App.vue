@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onUpdated } from "vue";
 import draggable from "vuedraggable";
 import AppTaskItem from "./components/AppTaskItem.vue";
 import AppModal from "./components/AppModal.vue";
@@ -15,11 +15,11 @@ let columns = ref([[], [], [], []]);
 let formIsOpen = ref(false);
 let editMode = ref(false);
 let errorClass = ref("");
+
 let formData = ref({
   name: "",
   description: "",
   priority: {},
-  editMode: false,
   completed: false,
 });
 // Добавляем задачу
@@ -53,11 +53,10 @@ const addItem = () => {
   // Объект задачи
 
   let newTask = {
-    id: Math.floor(Math.random() * 100),
+    id: String(Math.floor(Math.random() * 100)),
     name: formData.value.name,
     description: formData.value.description,
     priority: formData.value.priority,
-    editMode: false,
     completed: false,
   };
 
@@ -67,7 +66,6 @@ const addItem = () => {
     name: "",
     description: "",
     priority: {},
-    editMode: false,
     completed: false,
   };
 
@@ -84,6 +82,8 @@ const updateTask = (id) => {
       }
     });
   });
+
+  // replaceCompletedTask(id);
 };
 
 // Удаляем задачу
@@ -98,10 +98,11 @@ const removeTask = (id) => {
 
 const handleEditForm = (id) => {
   formIsOpen.value = !formIsOpen.value;
-  editMode.value = !editMode.value;
+  editMode.value = true;
   columns.value.map((column) => {
     return column.filter((items) => {
       if (items.id === id) {
+        formData.value.id = items.id;
         formData.value.name = items.name;
         formData.value.description = items.description;
         formData.value.priority = items.priority;
@@ -111,33 +112,49 @@ const handleEditForm = (id) => {
   });
 };
 
-// const handleEditMode = (id) => {
-//   formIsOpen.value = !formIsOpen.value;
-//   editMode.value = !editMode.value;
-//   tasks.value.filter((task) => {
-//     if (task.id === id) {
-//       formData.value.taskName = task.taskName;
-//       formData.value.taskDescription = task.taskDescription;
-//       formData.value.taskPriority = task.taskPriority;
-//     }
-// });
-// tasks.value.filter((task) => {
-//   if (task.id === id) {
-//     task.editMode = !task.editMode;
-//   }
-// });
-// };
+const saveEditedTaskName = () => {
+  columns.value.map((column) => {
+    column.find((items) => {
+      if (formData.value.id === items.id) {
+        console.log(items.name, formData.value.name);
+        items.name = formData.value.name;
+        items.description = formData.value.description;
+        items.priority = formData.value.priority;
+      }
+    });
+  });
 
-// const saveEditedTaskName = (id, value) => {
-//   tasks.value.filter((task) => {
-//     if (task.id === id) {
-//       task.name = value;
-//       task.editMode = !task.editMode;
-//     }
+  editMode.value = false;
+  formData.value = {
+    name: "",
+    description: "",
+    priority: {},
+    editMode: false,
+    completed: false,
+  };
+  formIsOpen.value = !formIsOpen.value;
+};
+
+// const replaceCompletedTask = (id) => {
+//   columns.value = columns.value.map((column) => {
+//     return column.filter((items) => {
+//       if (items.id === id) {
+//         console.log(column);
+//         return columns.value[3].unshift(items);
+//       }
+//     });
 //   });
 // };
 
-// return { count, tasks, addTask, removeTask };
+// onUpdated(offItems);
+
+// onMounted(() => {
+//   window.addEventListener("keydown", (event) => {
+//     if (event.key === "Enter") {
+//       handleModal();
+//     }
+//   });
+// });
 </script>
 
 <template>
@@ -151,17 +168,16 @@ const handleEditForm = (id) => {
       :errorClass="errorClass"
       :addItem="addItem"
       :editMode="editMode"
+      :saveEditedTaskName="saveEditedTaskName"
     />
   </teleport>
   <section>
-    {{ formIsOpen }}
-
     <div class="container">
       <div class="column">
         <h3>No Started</h3>
         <draggable
           :list="columns[0]"
-          :itemKey="id"
+          itemKey="id"
           group="tasks"
           tag="ul"
           ghost-class="ghost"
@@ -185,14 +201,22 @@ const handleEditForm = (id) => {
         <h3>No Completed</h3>
         <draggable
           :list="columns[1]"
-          :itemKey="id"
+          itemKey="id"
           group="tasks"
           tag="ul"
           ghost-class="ghost"
         >
           <template #item="{ element: task }">
-            <app-task-item :description="task.description"
-              >{{ task.name }}
+            <app-task-item
+              :id="task.id"
+              :name="task.name"
+              :description="task.description"
+              :priority="task.priority.name"
+              :completed="task.completed"
+              :updateTask="updateTask"
+              :removeTask="removeTask"
+              :editTask="handleEditForm"
+            >
             </app-task-item>
           </template>
         </draggable>
@@ -201,14 +225,22 @@ const handleEditForm = (id) => {
         <h3>In Progress</h3>
         <draggable
           :list="columns[2]"
-          :itemKey="id"
+          itemKey="id"
           group="tasks"
           tag="ul"
           ghost-class="ghost"
         >
           <template #item="{ element: task }">
-            <app-task-item :description="task.description"
-              >{{ task.name }}
+            <app-task-item
+              :id="task.id"
+              :name="task.name"
+              :description="task.description"
+              :priority="task.priority.name"
+              :completed="task.completed"
+              :updateTask="updateTask"
+              :removeTask="removeTask"
+              :editTask="handleEditForm"
+            >
             </app-task-item>
           </template>
         </draggable>
@@ -217,14 +249,22 @@ const handleEditForm = (id) => {
         <h3>Done</h3>
         <draggable
           :list="columns[3]"
-          :itemKey="id"
+          itemKey="id"
           group="tasks"
           tag="ul"
           ghost-class="ghost"
         >
           <template #item="{ element: task }">
-            <app-task-item :description="task.description"
-              >{{ task.name }}
+            <app-task-item
+              :id="task.id"
+              :name="task.name"
+              :description="task.description"
+              :priority="task.priority.name"
+              :completed="task.completed"
+              :updateTask="updateTask"
+              :removeTask="removeTask"
+              :editTask="handleEditForm"
+            >
             </app-task-item>
           </template>
         </draggable>

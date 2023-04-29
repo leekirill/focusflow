@@ -12,15 +12,12 @@ const props = defineProps([
   "addItem",
   "errorClass",
   "editMode",
+  "saveEditedTaskName",
 ]);
-// const emit = defineProps(['handleModal'])
-
-// // const handleModal = () => {
-// //   emit('handleModal', )
-// // }
 
 let priority = ref([{ name: "High" }, { name: "Medium" }, { name: "Low" }]);
-let editTitle = computed(() => {
+
+const editTitle = computed(() => {
   return props.editMode ? "Edit" : "New task";
 });
 </script>
@@ -37,6 +34,16 @@ let editTitle = computed(() => {
       <div class="flex flex-column gap-2">
         <label for="name">Task Name</label>
         <InputText
+          v-if="editMode"
+          id="name"
+          v-model="formData.name"
+          aria-describedby="task-name"
+          :class="errorClass"
+          @keydown.enter="saveEditedTaskName"
+          autofocus
+        />
+        <InputText
+          v-else
           id="name"
           v-model="formData.name"
           aria-describedby="task-name"
@@ -60,7 +67,13 @@ let editTitle = computed(() => {
     </div>
 
     <template #footer>
-      <Button label="Add task" icon="pi pi-plus" @click="addItem" />
+      <Button
+        v-if="editMode"
+        label="Save"
+        icon="pi pi-save"
+        @click="saveEditedTaskName"
+      />
+      <Button v-else label="Add task" icon="pi pi-plus" @click="addItem" />
     </template>
   </Dialog>
 </template>
