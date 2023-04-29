@@ -23,6 +23,7 @@ let columns = ref([[], [], [], []]);
 let formIsOpen = ref(false);
 let editMode = ref(false);
 let errorClass = ref("");
+let searchValue = ref("");
 let selectedSortingName = ref({ name: "desc", id: 0 });
 let sortingItems = ref([
   {
@@ -31,7 +32,7 @@ let sortingItems = ref([
       selectedSortingName.value.id = 0;
       selectedSortingName.value.name = "desc";
       columns.value = columns.value.map((column) => {
-        return column.sort((a, b) => a.id - b.id);
+        return column.sort((a, b) => a.name.localeCompare(b.name));
       });
     },
   },
@@ -41,7 +42,7 @@ let sortingItems = ref([
       selectedSortingName.value.id = 1;
       selectedSortingName.value.name = "asc";
       columns.value = columns.value.map((column) => {
-        return column.sort((a, b) => b.id - a.id);
+        return column.sort((a, b) => b.name.localeCompare(a.name));
       });
     },
   },
@@ -184,24 +185,6 @@ watchEffect(() => {
   // });
 });
 
-const sorting = () => {
-  switch (selectedSortingName.id) {
-    case 0: {
-      columns.value = columns.value.map((column) => {
-        console.log(column.sort((a, b) => a.name - b.name));
-      });
-    }
-    case 1: {
-      columns.value = columns.value.map((column) => {
-        column.sort((a, b) => {
-          return b.name - a.name;
-        });
-      });
-    }
-    default:
-      break;
-  }
-};
 // const replaceCompletedTask = (id) => {
 //   columns.value = columns.value.map((column) => {
 //     return column.filter((items) => {
@@ -222,10 +205,18 @@ const toggle = (event) => {
   menu.value.toggle(event);
   console.log(menu.value);
 };
+
+const handleValue = (value) => {
+  searchValue.value = value;
+
+  columns.value = columns.value.map((column) => {
+    console.log(column);
+  });
+};
 </script>
 
 <template>
-  <AppHeader />
+  <AppHeader :handleValue="handleValue" />
   <Toast />
 
   <teleport to="body">

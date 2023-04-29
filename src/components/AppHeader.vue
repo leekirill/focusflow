@@ -1,6 +1,13 @@
 <script setup>
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
+import { ref } from "vue";
+const props = defineProps(["handleValue"]);
+// props.searchValue
+
+const handle = (e) => {
+  props.handleValue(e.target.value);
+};
 </script>
 
 <template>
@@ -8,7 +15,7 @@ import InputText from "primevue/inputtext";
     <div class="header__left">
       <span class="p-input-icon-left">
         <i class="pi pi-search" />
-        <InputText v-model="value1" placeholder="Search" />
+        <InputText @input="handle" placeholder="Search" />
       </span>
     </div>
     <div class="header__middle">
