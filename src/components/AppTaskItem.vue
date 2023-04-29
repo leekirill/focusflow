@@ -16,7 +16,7 @@ const props = defineProps([
   "editTask",
 ]);
 
-let completed = ref();
+let completed = ref(props.completed);
 
 const tagColor = computed(() => {
   switch (props.priority) {
@@ -68,6 +68,7 @@ const isTaskDone = computed(() => {
           /> -->
         <Checkbox
           v-model="completed"
+          :binary="completed"
           :inputId="id"
           :value="id"
           @input="updateTask(id)"

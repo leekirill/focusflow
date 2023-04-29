@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onUpdated } from "vue";
+import { ref, computed, onMounted, onUpdated, watchEffect } from "vue";
 import draggable from "vuedraggable";
 import AppTaskItem from "./components/AppTaskItem.vue";
 import AppModal from "./components/AppModal.vue";
@@ -134,6 +134,25 @@ const saveEditedTaskName = () => {
   };
   formIsOpen.value = !formIsOpen.value;
 };
+
+watchEffect(() => {
+  // columns.value.forEach((column) => {
+  //   column.map((items) => {
+  //     items.completed = false;
+  //   });
+  // });
+  for (let i = 0; i < columns.value.length - 1; i++) {
+    columns.value[i].map((items) => {
+      items.completed = false;
+    });
+  }
+  columns.value[3].map((items) => {
+    items.completed = true;
+  });
+  // columns.value[3].map((column) => {
+  //   column.completed = true;
+  // });
+});
 
 // const replaceCompletedTask = (id) => {
 //   columns.value = columns.value.map((column) => {
