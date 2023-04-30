@@ -22,7 +22,9 @@ const handle = (e) => {
     </div>
     <div class="header__middle">
       <div class="logo">
-        <span>FocusFlow</span>
+        <a href="/">
+          <span>FocusFlow</span>
+        </a>
       </div>
     </div>
     <div class="header__right">
@@ -54,6 +56,10 @@ const handle = (e) => {
     span {
       font-size: 30px;
       font-weight: 700;
+    }
+    a {
+      text-decoration: none;
+      color: #1a1a1a;
     }
   }
 }
