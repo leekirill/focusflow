@@ -128,13 +128,28 @@ const addItem = () => {
 // Отмечаем задачу
 
 const updateTask = (id) => {
-  columns.value.forEach((column) => {
+  columns.value.forEach((column, index) => {
     column.filter((item) => {
       if (item.id === id) {
         item.completed = !item.completed;
+        console.log(item.completed);
+        moveTask(item, id, index);
       }
     });
   });
+
+  function moveTask(task, taskId, columnId) {
+    if (task.completed) {
+      columns.value[columnId] = columns.value[columnId].filter(
+        (item) => item.id !== taskId
+      );
+      columns.value[3].unshift(task);
+      console.log(task.completed);
+    } else {
+      columns.value[3] = columns.value[3].filter((item) => item.id !== taskId);
+      columns.value[columnId].unshift(task);
+    }
+  }
 };
 
 // Удаляем задачу
@@ -197,10 +212,6 @@ watchEffect(() => {
   columns.value[3].map((items) => {
     items.completed = true;
   });
-
-  // columns.value[3].map((column) => {
-  //   column.completed = true;
-  // });
 });
 
 // const replaceCompletedTask = (id) => {
@@ -292,7 +303,7 @@ const filteredArr = computed(() => {
           <h4>No Started</h4>
           <draggable
             :list="columns[0]"
-            itemKey="id"
+            itemKey="1"
             group="tasks"
             tag="ul"
             ghost-class="ghost"
