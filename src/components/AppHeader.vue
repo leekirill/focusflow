@@ -17,6 +17,8 @@ const handle = (e) => {
         <i class="pi pi-search" />
         <InputText @input="handle" placeholder="Search" />
       </span>
+      <a href="#/zabl">Zabl</a>
+      <a href="#/header">Header</a>
     </div>
     <div class="header__middle">
       <div class="logo">

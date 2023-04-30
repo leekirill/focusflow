@@ -1,17 +1,11 @@
 <script setup>
-import {
-  ref,
-  computed,
-  onMounted,
-  onUpdated,
-  watchEffect,
-  defineComponent,
-} from "vue";
+import { ref, computed, watchEffect } from "vue";
 
 import draggable from "vuedraggable";
 import AppTaskItem from "./components/AppTaskItem.vue";
 import AppModal from "./components/AppModal.vue";
 import AppHeader from "./components/AppHeader.vue";
+import AppRouteVue from "./components/AppRoute.vue";
 import Button from "primevue/button";
 import Toast from "primevue/toast";
 import Menu from "primevue/menu";
@@ -241,6 +235,8 @@ const filteredArr = computed(() => {
   return filtered;
 });
 
+// Replace item if it completed
+
 watchEffect(() => {
   for (let i = 0; i < columns.value.length - 1; i++) {
     columns.value[i].forEach((items) => {
@@ -279,6 +275,7 @@ watchEffect(() => {
     />
   </teleport>
   <section>
+    <router-view></router-view>
     <div class="panel">
       <div class="panel__header">
         <Button label="Add task" icon="pi pi-plus" @click="handleModal" />

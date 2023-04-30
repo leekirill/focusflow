@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import PrimeVue from "primevue/config";
 import ToastService from "primevue/toastservice";
+import router from "./router";
 import App from "./App.vue";
 
 import "./styles.scss";
@@ -9,4 +10,4 @@ import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
 import "/node_modules/primeflex/primeflex.css";
 
-createApp(App).use(PrimeVue).use(ToastService).mount("#app");
+createApp(App).use(router).use(PrimeVue).use(ToastService).mount("#app");
