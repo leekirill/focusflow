@@ -128,28 +128,29 @@ const addItem = () => {
 // Отмечаем задачу
 
 const updateTask = (id) => {
-  columns.value.forEach((column, index) => {
-    column.filter((item) => {
+  columns.value.map((column, index) => {
+    column.map((item) => {
       if (item.id === id) {
-        item.completed = !item.completed;
-        console.log(item.completed);
         moveTask(item, id, index);
+        // item.completed = !item.completed;
       }
     });
   });
 
   function moveTask(task, taskId, columnId) {
-    if (task.completed) {
+    if (!task.completed) {
       columns.value[columnId] = columns.value[columnId].filter(
         (item) => item.id !== taskId
       );
-      columns.value[3].unshift(task);
-      console.log(task.completed);
+      columns.value[columns.value.length - 1].unshift(task);
     } else {
-      columns.value[3] = columns.value[3].filter((item) => item.id !== taskId);
-      columns.value[columnId].unshift(task);
+      columns.value[columns.value.length - 1] = columns.value[columnId].filter(
+        (item) => item.id !== taskId
+      );
+      columns.value[0].unshift(task);
     }
   }
+  console.log(columns.value);
 };
 
 // Удаляем задачу
@@ -201,25 +202,12 @@ const saveEditedTaskName = () => {
   formIsOpen.value = !formIsOpen.value;
 };
 
-// Completed когда в Done
-
-watchEffect(() => {
-  for (let i = 0; i < columns.value.length - 1; i++) {
-    columns.value[i].map((items) => {
-      items.completed = false;
-    });
-  }
-  columns.value[3].map((items) => {
-    items.completed = true;
-  });
-});
-
 // const replaceCompletedTask = (id) => {
 //   columns.value = columns.value.map((column) => {
 //     return column.filter((items) => {
 //       if (items.id === id) {
 //         console.log(column);
-//         return columns.value[3].unshift(items);
+//         return columns.value[columns.value.length - 1].unshift(items);
 //       }
 //     });
 //   });
@@ -251,6 +239,17 @@ const filteredArr = computed(() => {
     })
   );
   return filtered;
+});
+
+watchEffect(() => {
+  for (let i = 0; i < columns.value.length - 1; i++) {
+    columns.value[i].forEach((items) => {
+      items.completed = false;
+    });
+    columns.value[columns.value.length - 1].forEach((items) => {
+      items.completed = true;
+    });
+  }
 });
 
 // const filteredArr = (arr, value) => {
@@ -296,86 +295,12 @@ const filteredArr = computed(() => {
           <Menu ref="menu" :id="id" :model="sortingItems" :popup="true" />
           <Toast />
         </div>
-        <!-- <span>Sorting</span> -->
       </div>
       <div class="container">
-        <div class="column">
-          <h4>No Started</h4>
+        <div class="column" v-for="(column, i) in columns" :key="i">
           <draggable
-            :list="columns[0]"
-            itemKey="1"
-            group="tasks"
-            tag="ul"
-            ghost-class="ghost"
-          >
-            <template #item="{ element: task }">
-              <app-task-item
-                :id="task.id"
-                :name="task.name"
-                :description="task.description"
-                :priority="task.priority.name"
-                :completed="task.completed"
-                :updateTask="updateTask"
-                :removeTask="removeTask"
-                :editTask="handleEditForm"
-              >
-              </app-task-item>
-            </template>
-          </draggable>
-        </div>
-        <div class="column">
-          <h4>No Completed</h4>
-          <draggable
-            :list="columns[1]"
-            itemKey="id"
-            group="tasks"
-            tag="ul"
-            ghost-class="ghost"
-          >
-            <template #item="{ element: task }">
-              <app-task-item
-                :id="task.id"
-                :name="task.name"
-                :description="task.description"
-                :priority="task.priority.name"
-                :completed="task.completed"
-                :updateTask="updateTask"
-                :removeTask="removeTask"
-                :editTask="handleEditForm"
-              >
-              </app-task-item>
-            </template>
-          </draggable>
-        </div>
-        <div class="column">
-          <h4>In Progress</h4>
-          <draggable
-            :list="columns[2]"
-            itemKey="id"
-            group="tasks"
-            tag="ul"
-            ghost-class="ghost"
-          >
-            <template #item="{ element: task }">
-              <app-task-item
-                :id="task.id"
-                :name="task.name"
-                :description="task.description"
-                :priority="task.priority.name"
-                :completed="task.completed"
-                :updateTask="updateTask"
-                :removeTask="removeTask"
-                :editTask="handleEditForm"
-              >
-              </app-task-item>
-            </template>
-          </draggable>
-        </div>
-        <div class="column">
-          <h4>Done</h4>
-          <draggable
-            :list="columns[3]"
-            itemKey="id"
+            :list="column"
+            :itemKey="String(i)"
             group="tasks"
             tag="ul"
             ghost-class="ghost"

@@ -17,7 +17,8 @@ const props = defineProps([
 ]);
 
 let completed = ref(props.completed);
-let checked = ref(props.completed);
+console.log(props.completed);
+// let checked = ref();
 
 const tagColor = computed(() => {
   switch (props.priority) {
@@ -60,13 +61,6 @@ const isTaskDone = computed(() => {
   <Card class="card">
     <template #title>
       <div class="flex align-items-center">
-        <!-- <label :class="isTaskDone"> -->
-        <!-- <input
-            id="checkbox"
-            type="checkbox"
-            :checked="completed"
-            @input="updateTask(id)"
-          /> -->
         <Checkbox
           v-model="checked"
           :binary="completed"
