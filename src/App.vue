@@ -32,7 +32,7 @@ let sortingItems = ref([
       selectedSortingName.value.id = 0;
       selectedSortingName.value.name = "desc";
       columns.value = columns.value.map((column) => {
-        return column.sort((a, b) => a.name.localeCompare(b.name));
+        return [...column].sort((a, b) => b.name.localeCompare(a.name));
       });
     },
   },
@@ -42,7 +42,27 @@ let sortingItems = ref([
       selectedSortingName.value.id = 1;
       selectedSortingName.value.name = "asc";
       columns.value = columns.value.map((column) => {
-        return column.sort((a, b) => b.name.localeCompare(a.name));
+        return [...column].sort((a, b) => a.name.localeCompare(b.name));
+      });
+    },
+  },
+  {
+    label: "priority desc",
+    command: () => {
+      selectedSortingName.value.id = 1;
+      selectedSortingName.value.name = "asc";
+      columns.value = columns.value.map((column) => {
+        return [...column].sort((a, b) => a.priority.id - b.priority.id);
+      });
+    },
+  },
+  {
+    label: "priority asc",
+    command: () => {
+      selectedSortingName.value.id = 1;
+      selectedSortingName.value.name = "asc";
+      columns.value = columns.value.map((column) => {
+        return [...column].sort((a, b) => b.priority.id - a.priority.id);
       });
     },
   },
@@ -115,8 +135,6 @@ const updateTask = (id) => {
       }
     });
   });
-
-  // replaceCompletedTask(id);
 };
 
 // Удаляем задачу
@@ -206,13 +224,34 @@ const toggle = (event) => {
   console.log(menu.value);
 };
 
+// Поиск
+
 const handleValue = (value) => {
   searchValue.value = value;
-
-  columns.value = columns.value.map((column) => {
-    console.log(column);
-  });
 };
+
+const filteredArr = computed(() => {
+  const filtered = columns.value.map((column) =>
+    column.filter((items) => {
+      if (items.name.includes(searchValue.value)) {
+        console.log(items.name + "+");
+        return items;
+      }
+    })
+  );
+  return filtered;
+});
+
+// const filteredArr = (arr, value) => {
+//   return arr.filter((items) => {
+//     if (items.name.toLowerCase().includes(value.toLowerCase())) {
+//       console.log(items.name + "+");
+//       return items;
+//     } else {
+//       items = {};
+//     }
+//   });
+// };
 </script>
 
 <template>
@@ -233,9 +272,6 @@ const handleValue = (value) => {
     <div class="panel">
       <div class="panel__header">
         <Button label="Add task" icon="pi pi-plus" @click="handleModal" />
-        <!-- <div class="card flex justify-content-center">
-            <Menu :model="sortingItems" label="name" />
-          </div> -->
         <div class="card flex justify-content-center align-items-center">
           <span>Sorting by: </span>
           <Button

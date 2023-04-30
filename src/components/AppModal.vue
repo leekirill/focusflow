@@ -15,7 +15,11 @@ const props = defineProps([
   "saveEditedTaskName",
 ]);
 
-let priority = ref([{ name: "High" }, { name: "Medium" }, { name: "Low" }]);
+let priority = ref([
+  { name: "High", id: 3 },
+  { name: "Medium", id: 2 },
+  { name: "Low", id: 1 },
+]);
 
 const editTitle = computed(() => {
   return props.editMode ? "Edit" : "New task";
