@@ -1,12 +1,12 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 
-import AppRoute from "./components/AppRoute.vue";
-import AppHeader from "./components/AppHeader.vue";
+import Home from "./views/Home.vue";
+import Tasks from "./views/Tasks.vue";
 
 export default createRouter({
   history: createWebHashHistory(),
   routes: [
-    { path: "/zabl", component: AppRoute },
-    { path: "/header", component: AppHeader },
+    { path: "/", name: "Home", component: Home, alias: "/" },
+    { path: "/tasks", name: "Tasks", component: Tasks },
   ],
 });

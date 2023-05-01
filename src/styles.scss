@@ -6,10 +6,15 @@ body {
   padding: 0;
   margin: 0;
   background-color: #F2F6FE;
+  box-sizing: border-box;
 }
 h3, ul {
   padding: 0;
   margin: 0;
+}
+a {
+  text-decoration: none;
+  color: #1a1a1a
 }
 
 .panel {

@@ -1,30 +1,29 @@
 <script setup>
 import Button from "primevue/button";
-import InputText from "primevue/inputtext";
-import { ref } from "vue";
-const props = defineProps(["handleValue"]);
-// props.searchValue
-
-const handle = (e) => {
-  props.handleValue(e.target.value);
-};
+// const handle = (e) => {
+//   props.handleValue(e.target.value);
+// };
 </script>
 
 <template>
   <header class="header">
     <div class="header__left">
-      <span class="p-input-icon-left">
-        <i class="pi pi-search" />
-        <InputText @input="handle" placeholder="Search" />
-      </span>
-      <a href="#/zabl">Zabl</a>
-      <a href="#/header">Header</a>
+      <nav class="header__left nav">
+        <ul class="header__left nav list">
+          <li class="flex align-items-center">
+            <router-link class="px-4" :to="{ name: 'Home' }">Home</router-link>
+          </li>
+          <li class="flex align-items-center">
+            <router-link class="px-4" :to="{ name: 'Tasks' }"
+              >Tasks</router-link
+            >
+          </li>
+        </ul>
+      </nav>
     </div>
     <div class="header__middle">
       <div class="logo">
-        <a href="/">
-          <span>FocusFlow</span>
-        </a>
+        <router-link to="/"> FocusFlow </router-link>
       </div>
     </div>
     <div class="header__right">
@@ -38,12 +37,21 @@ const handle = (e) => {
 .header {
   display: flex;
   justify-content: space-between;
-  max-width: 1440px;
-  margin: auto;
-  padding: 30px 0px;
+  padding: 30px 0;
   &__left {
     display: inherit;
-    gap: 20px;
+    a.router-link-active {
+      color: var(--primary-color);
+
+      .link {
+        list-style: none;
+        a {
+          padding: 0 20px;
+          text-decoration: none;
+          color: #1a1a1a;
+        }
+      }
+    }
   }
   &__right {
     display: inherit;
@@ -53,13 +61,9 @@ const handle = (e) => {
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0);
-    span {
+    a {
       font-size: 30px;
       font-weight: 700;
-    }
-    a {
-      text-decoration: none;
-      color: #1a1a1a;
     }
   }
 }
