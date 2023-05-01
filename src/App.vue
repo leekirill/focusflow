@@ -141,7 +141,8 @@ const updateTask = (id) => {
       columns.value[columns.value.length - 1] = columns.value[columnId].filter(
         (item) => item.id !== taskId
       );
-      columns.value[0].unshift(task);
+      columns.value[task.columnNumber].unshift(task);
+      console.log(task);
     }
   }
   console.log(columns.value);
@@ -241,6 +242,7 @@ watchEffect(() => {
   for (let i = 0; i < columns.value.length - 1; i++) {
     columns.value[i].forEach((items) => {
       items.completed = false;
+      items.columnNumber = i;
     });
     columns.value[columns.value.length - 1].forEach((items) => {
       items.completed = true;
