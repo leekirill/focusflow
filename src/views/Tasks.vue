@@ -19,92 +19,48 @@ let editMode = ref(false);
 let errorClass = ref("");
 let searchValue = ref("");
 let selectedSortingName = ref({ name: "desc", id: 0 });
-let sortingItems = ref(
-  [
-    {
-      label: "desc",
-      command: () => {
-        selectedSortingName.value.id = 0;
-        selectedSortingName.value.name = "desc";
-        columns.value = columns.value.map((column) => {
-          return [...column].sort((a, b) => b.name.localeCompare(a.name));
-        });
-      },
+let sortingItems = ref([
+  {
+    label: "desc",
+    command: () => {
+      selectedSortingName.value.id = 0;
+      selectedSortingName.value.name = "desc";
+      columns.value = columns.value.map((column) => {
+        return [...column].sort((a, b) => b.name.localeCompare(a.name));
+      });
     },
-    {
-      label: "asc",
-      command: () => {
-        selectedSortingName.value.id = 1;
-        selectedSortingName.value.name = "asc";
-        columns.value = columns.value.map((column) => {
-          return [...column].sort((a, b) => a.name.localeCompare(b.name));
-        });
-      },
+  },
+  {
+    label: "asc",
+    command: () => {
+      selectedSortingName.value.id = 1;
+      selectedSortingName.value.name = "asc";
+      columns.value = columns.value.map((column) => {
+        return [...column].sort((a, b) => a.name.localeCompare(b.name));
+      });
     },
-    {
-      label: "priority desc",
-      command: () => {
-        selectedSortingName.value.id = 1;
-        selectedSortingName.value.name = "asc";
-        columns.value = columns.value.map((column) => {
-          return [...column].sort((a, b) => a.priority.id - b.priority.id);
-        });
-      },
+  },
+  {
+    label: "priority desc",
+    command: () => {
+      selectedSortingName.value.id = 1;
+      selectedSortingName.value.name = "asc";
+      columns.value = columns.value.map((column) => {
+        return [...column].sort((a, b) => a.priority.id - b.priority.id);
+      });
     },
-    {
-      label: "priority asc",
-      command: () => {
-        selectedSortingName.value.id = 1;
-        selectedSortingName.value.name = "asc";
-        columns.value = columns.value.map((column) => {
-          return [...column].sort((a, b) => b.priority.id - a.priority.id);
-        });
-      },
+  },
+  {
+    label: "priority asc",
+    command: () => {
+      selectedSortingName.value.id = 1;
+      selectedSortingName.value.name = "asc";
+      columns.value = columns.value.map((column) => {
+        return [...column].sort((a, b) => b.priority.id - a.priority.id);
+      });
     },
-  ],
-  [
-    {
-      label: "desc",
-      command: () => {
-        selectedSortingName.value.id = 0;
-        selectedSortingName.value.name = "desc";
-        columns.value = columns.value.map((column) => {
-          return [...column].sort((a, b) => b.name.localeCompare(a.name));
-        });
-      },
-    },
-    {
-      label: "asc",
-      command: () => {
-        selectedSortingName.value.id = 1;
-        selectedSortingName.value.name = "asc";
-        columns.value = columns.value.map((column) => {
-          return [...column].sort((a, b) => a.name.localeCompare(b.name));
-        });
-      },
-    },
-    {
-      label: "priority desc",
-      command: () => {
-        selectedSortingName.value.id = 1;
-        selectedSortingName.value.name = "asc";
-        columns.value = columns.value.map((column) => {
-          return [...column].sort((a, b) => a.priority.id - b.priority.id);
-        });
-      },
-    },
-    {
-      label: "priority asc",
-      command: () => {
-        selectedSortingName.value.id = 1;
-        selectedSortingName.value.name = "asc";
-        columns.value = columns.value.map((column) => {
-          return [...column].sort((a, b) => b.priority.id - a.priority.id);
-        });
-      },
-    },
-  ]
-);
+  },
+]);
 
 let formData = ref({
   name: "",

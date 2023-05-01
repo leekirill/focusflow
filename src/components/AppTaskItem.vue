@@ -51,24 +51,23 @@ let getCurrentDate = computed(() => {
 });
 
 const isTaskDone = computed(() => {
-  return props.completed ? "checked" : "ml-2";
+  return props.completed ? "completed" : "card";
 });
 </script>
 
 <template>
-  <Card class="card">
+  <Card :class="isTaskDone">
     <template #title>
       <div class="flex align-items-center">
         <Checkbox
           v-model="checked"
           :binary="checked"
-          :inputId="id"
+          inputId="card"
+          name="cards"
           :value="id"
           @input="updateTask(id)"
         />
-        <label :for="id" :class="`${isTaskDone} ml-2`"> {{ props.name }}</label>
-
-        <!-- </label> -->
+        <label class="ml-2" for="card"> {{ props.name }}</label>
       </div>
     </template>
     <template #content>
@@ -104,6 +103,15 @@ const isTaskDone = computed(() => {
 </template>
 
 <style scoped lang="scss">
+.p-card .p-card-content {
+  margin: 0;
+  padding: 0;
+}
+p {
+  margin: 0;
+  padding: 0;
+}
+
 li {
   background-color: #fff;
   &:hover,
@@ -113,11 +121,17 @@ li {
 }
 
 .checked {
-  text-decoration: line-through;
-  opacity: 0.4;
+  opacity: 0.5;
 }
 .card {
   cursor: pointer;
+}
+.completed {
+  opacity: 0.5;
+  label {
+    text-decoration: line-through;
+    color: #9f9f9f;
+  }
 }
 // .item__bottom {
 //   flex-direction: column;

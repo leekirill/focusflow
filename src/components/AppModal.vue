@@ -74,7 +74,7 @@ const editTitle = computed(() => {
       <Button
         v-if="editMode"
         label="Save"
-        icon="pi pi-save"
+        icon="pi pi-check"
         @click="saveEditedTaskName"
       />
       <Button v-else label="Add task" icon="pi pi-plus" @click="addItem" />
