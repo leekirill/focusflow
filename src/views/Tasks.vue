@@ -9,6 +9,8 @@ import Button from "primevue/button";
 import Toast from "primevue/toast";
 import Menu from "primevue/menu";
 
+import image from "../assets/rest-image.svg";
+
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
 
@@ -260,6 +262,11 @@ watchEffect(() => {
 //     }
 //   });
 // };
+const isThereAnyTask = computed(() => {
+  return columns.value.some((column) => {
+    return column.length;
+  });
+});
 onMounted(() => {
   selectedSortingName.value.name = "";
 });
@@ -280,8 +287,7 @@ onMounted(() => {
     />
   </teleport>
   <section>
-    <div class="panel">
-      {{ checkedArr }}
+    <div v-if="isThereAnyTask" class="panel">
       <div class="panel__header">
         <Button label="Add task" icon="pi pi-plus" @click="handleModal" />
         <div class="flex gap-3">
@@ -292,7 +298,6 @@ onMounted(() => {
           <Toast />
         </div>
       </div>
-
       <div class="container">
         <div class="column" v-for="(column, i) in columns" :key="i">
           <div class="flex align-items-baseline justify-content-between">
@@ -333,6 +338,13 @@ onMounted(() => {
           </draggable>
         </div>
       </div>
+    </div>
+    <div v-else class="p-6 border-round-2xl text-center bg-white">
+      <div class="mb-5">
+        <img :src="image" width="600" />
+        <h1 class="text-center">You don't have any task</h1>
+      </div>
+      <Button label="Add task" icon="pi pi-plus" @click="handleModal" />
     </div>
   </section>
 </template>

@@ -28,7 +28,7 @@ import Button from "primevue/button";
     </div>
     <div class="header__right">
       <router-link to="/signup">
-        <Button label="Sign up" icon="pi pi-user" outlined />
+        <Button label="Sign up" />
       </router-link>
       <Button label="Login" link />
     </div>
