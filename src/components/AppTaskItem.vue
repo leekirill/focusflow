@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watchEffect } from "vue";
 import Card from "primevue/card";
 import Button from "primevue/button";
 import Checkbox from "primevue/checkbox";
@@ -17,6 +17,7 @@ const props = defineProps([
 ]);
 
 let checked = ref(props.completed);
+console.log(checked.value);
 
 const tagColor = computed(() => {
   switch (props.priority) {
@@ -60,14 +61,14 @@ const isTaskDone = computed(() => {
     <template #title>
       <div class="flex align-items-center">
         <Checkbox
-          v-model="checked"
-          :binary="checked"
-          inputId="card"
-          name="cards"
+          :model-value="checked"
+          :inputId="id"
           :value="id"
+          binary="true"
+          checked="true"
           @input="updateTask(id)"
         />
-        <label class="ml-2" for="card"> {{ props.name }}</label>
+        <label class="ml-2" :for="id"> {{ props.name }}</label>
       </div>
     </template>
     <template #content>

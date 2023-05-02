@@ -9,7 +9,9 @@ import Button from "primevue/button";
       Achieve greater focus, organization, and tranquility with Focus Flow - the
       world's leading task manager and to-do list application.
     </p>
-    <Button label="Start now" size="large" />
+    <router-link to="/signup">
+      <Button label="Start now" size="large"
+    /></router-link>
   </div>
 </template>
 

@@ -1,6 +1,15 @@
 <script setup>
 import InputText from "primevue/inputtext";
+import Password from "primevue/password";
 import Button from "primevue/button";
+import Checkbox from "primevue/checkbox";
+import Divider from "primevue/divider";
+import { ref } from "vue";
+
+const name = ref();
+const email = ref();
+const password = ref();
+const accept = ref();
 </script>
 
 <template>
@@ -28,26 +37,17 @@ import Button from "primevue/button";
       </div>
       <div class="field">
         <div class="p-float-label">
-          <Password v-model="password">
-            <template #header>
-              <h6>Pick a password</h6>
-            </template>
-            <template #footer>
-              <Divider />
-              <p class="mt-2">Suggestions</p>
-              <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
-                <li>At least one lowercase</li>
-                <li>At least one uppercase</li>
-                <li>At least one numeric</li>
-                <li>Minimum 8 characters</li>
-              </ul>
-            </template>
-          </Password>
+          <Password v-model="password" />
           <label for="password">Password</label>
         </div>
       </div>
       <div class="field-checkbox">
-        <Checkbox id="accept" v-model="accept" name="accept" value="Accept" />
+        <Checkbox
+          inputId="accept"
+          v-model="accept"
+          name="accept"
+          value="Accept"
+        />
         <label for="accept">I agree to the terms and conditions*</label>
       </div>
       <Button type="submit" label="Submit" class="mt-2" />
@@ -55,4 +55,9 @@ import Button from "primevue/button";
   </form>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.card {
+  display: grid;
+  gap: 20px;
+}
+</style>

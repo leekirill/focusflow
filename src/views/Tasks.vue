@@ -281,6 +281,7 @@ onMounted(() => {
   </teleport>
   <section>
     <div class="panel">
+      {{ checkedArr }}
       <div class="panel__header">
         <Button label="Add task" icon="pi pi-plus" @click="handleModal" />
         <div class="flex gap-3">
@@ -325,6 +326,7 @@ onMounted(() => {
                 :updateTask="updateTask"
                 :removeTask="removeTask"
                 :editTask="handleEditForm"
+                :checkedArr="checkedArr"
               >
               </app-task-item>
             </template>
