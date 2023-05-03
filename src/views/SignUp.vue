@@ -13,8 +13,9 @@ const accept = ref();
 </script>
 
 <template>
-  <div class="flex justify-content-center align-items-center gap-8 absolute">
-    <form class="p-fluid bg-white p-6 border-round-xl">
+  <div class="container">
+    <form class="p-fluid">
+      <h1>Sign up</h1>
       <div v-focustrap class="card">
         <div class="field">
           <InputText
@@ -51,11 +52,22 @@ const accept = ref();
           />
           <label for="accept">I agree to the terms and conditions*</label>
         </div>
-        <Button type="submit" label="Submit" class="mt-2" />
+        <Button type="submit" label="Submit" class="mt-5" />
       </div>
     </form>
     <img :src="image" width="500" />
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 40px;
+
+  background: #fff;
+  padding: 100px 20px;
+  border-radius: 1rem;
+}
+</style>

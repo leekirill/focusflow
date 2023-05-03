@@ -228,10 +228,6 @@ const toggle = (event) => {
   }
 };
 
-const isThereAnySortableTask = () => {
-  return columns.value.map((column, i) => console.log(i, column.length));
-};
-
 // const catchColumnId()
 
 // Поиск
@@ -240,19 +236,20 @@ const handleValue = (value) => {
   searchValue.value = value;
 };
 
+let filtered = ref();
+
 const filteredArr = computed(() => {
-  const filtered = columns.value.map((column) =>
+  filtered.value = columns.value.map((column) =>
     column.filter((items) => {
       if (items.name.includes(searchValue.value)) {
-        console.log(items.name + "+");
         return items;
       }
     })
   );
-  return filtered;
+  return filtered.value;
 });
 
-// Replace item if it completed
+// Если закончили таску то — в колонку Done
 
 watchEffect(() => {
   for (let i = 0; i < columns.value.length - 1; i++) {
@@ -266,21 +263,20 @@ watchEffect(() => {
   }
 });
 
-// const filteredArr = (arr, value) => {
-//   return arr.filter((items) => {
-//     if (items.name.toLowerCase().includes(value.toLowerCase())) {
-//       console.log(items.name + "+");
-//       return items;
-//     } else {
-//       items = {};
-//     }
-//   });
-// };
+// Поиск
+
+const handle = (e) => {
+  handleValue(e.target.value);
+};
+
+// Проверяем есть ли вообще задачи в колонке
+
 const isThereAnyTask = computed(() => {
   return columns.value.some((column) => {
     return column.length;
   });
 });
+
 onMounted(() => {
   selectedSortingName.value.name = "";
 });
@@ -313,7 +309,7 @@ onMounted(() => {
         </div>
       </div>
       <div class="container">
-        <div class="column" v-for="(column, i) in columns" :key="i">
+        <div class="column" v-for="(column, i) in filteredArr" :key="i">
           <div class="flex align-items-baseline justify-content-between">
             <h4 class="column__heading">{{ titles[i] }}</h4>
             <div class="card flex justify-content-center align-items-center">
@@ -325,7 +321,7 @@ onMounted(() => {
                 aria-haspopup="true"
                 aria-controls="overlay_menu"
                 :aria-label="i"
-                :disabled="column.length < 1"
+                :disabled="column.length < 2"
                 link
               />
               <Menu ref="menu" :model="sortingItems" :popup="true" />

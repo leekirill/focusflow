@@ -1,8 +1,5 @@
 <script setup>
 import Button from "primevue/button";
-// const handle = (e) => {
-//   props.handleValue(e.target.value);
-// };
 </script>
 
 <template>
@@ -43,7 +40,12 @@ import Button from "primevue/button";
   &__left {
     display: inherit;
     a.router-link-active {
-      color: var(--primary-color);
+      color: #fff;
+      background: var(--primary-color);
+      height: 100%;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
 
       .link {
         list-style: none;
