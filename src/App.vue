@@ -7,13 +7,13 @@ import { ref, onMounted } from "vue";
 let auth;
 let router = useRouter();
 const isLoggedIn = ref(false);
-console.log(isLoggedIn.value);
 
 const handleSignOut = () => {
   signOut(auth).then(() => {
     router.push("/");
   });
 };
+
 onMounted(() => {
   auth = getAuth();
   onAuthStateChanged(auth, (user) => {

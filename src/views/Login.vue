@@ -4,7 +4,13 @@ import Password from "primevue/password";
 import Button from "primevue/button";
 import Checkbox from "primevue/checkbox";
 import image from "../assets/auth-image.svg";
-import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  updateProfile,
+  GoogleAuthProvider,
+  signInWithPopup,
+  getAuth,
+} from "firebase/auth";
 import { auth } from "../firebase/init";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
@@ -45,6 +51,13 @@ const signUp = () => {
       }
     });
 };
+const signInWithGoogle = () => {
+  const provider = new GoogleAuthProvider();
+  signInWithPopup(getAuth(), provider).then((res) => {
+    console.log(res);
+    router.push("/tasks");
+  });
+};
 </script>
 
 <template>
@@ -79,12 +92,20 @@ const signUp = () => {
           <label for="accept">I agree to the terms and conditions*</label>
         </div>
         <p v-if="errMsg">{{ errMsg }}</p>
-        <Button
-          type="submit"
-          label="Submit"
-          class="mt-5"
-          @click.prevent="signUp"
-        />
+        <div class="grid gap-2">
+          <Button
+            type="submit"
+            label="Submit"
+            class="mt-5"
+            @click.prevent="signUp"
+          />
+          <Button
+            label="Sign in with Google"
+            icon="pi pi-google"
+            outlined=""
+            @click="signInWithGoogle"
+          />
+        </div>
       </div>
     </form>
     <img :src="image" width="500" />

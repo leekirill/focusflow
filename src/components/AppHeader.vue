@@ -1,10 +1,7 @@
 <script setup>
 import Button from "primevue/button";
-import { ref } from "vue";
 
 const props = defineProps(["handleSignOut", "isLoggedIn"]);
-
-console.log(props.isLoggedIn, props.handleSignOut);
 </script>
 
 <template>
@@ -36,10 +33,10 @@ console.log(props.isLoggedIn, props.handleSignOut);
         outlined
       ></Button>
       <div v-else>
-        <router-link to="/signup">
+        <router-link :to="{ name: 'Signup' }">
           <Button label="Sign up" />
         </router-link>
-        <router-link to="/login">
+        <router-link :to="{ name: 'Login' }">
           <Button label="Login" link />
         </router-link>
       </div>
