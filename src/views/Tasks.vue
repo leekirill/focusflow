@@ -21,15 +21,16 @@ let editMode = ref(false);
 let errorClass = ref("");
 let searchValue = ref("");
 let selectedSortingName = ref({ name: "desc", id: 0 });
+let sorteredColumn = ref();
 let sortingItems = ref([
   {
     label: "desc",
     command: () => {
       selectedSortingName.value.id = 0;
       selectedSortingName.value.name = "desc";
-      columns.value = columns.value.map((column) => {
-        return [...column].sort((a, b) => b.name.localeCompare(a.name));
-      });
+      columns.value[sorteredColumn.value] = [
+        ...columns.value[sorteredColumn.value],
+      ].sort((a, b) => b.name.localeCompare(a.name));
     },
   },
   {
@@ -37,9 +38,9 @@ let sortingItems = ref([
     command: () => {
       selectedSortingName.value.id = 1;
       selectedSortingName.value.name = "asc";
-      columns.value = columns.value.map((column) => {
-        return [...column].sort((a, b) => a.name.localeCompare(b.name));
-      });
+      columns.value[sorteredColumn.value] = [
+        ...columns.value[sorteredColumn.value],
+      ].sort((a, b) => a.name.localeCompare(b.name));
     },
   },
   {
@@ -47,9 +48,9 @@ let sortingItems = ref([
     command: () => {
       selectedSortingName.value.id = 1;
       selectedSortingName.value.name = "asc";
-      columns.value = columns.value.map((column) => {
-        return [...column].sort((a, b) => a.priority.id - b.priority.id);
-      });
+      columns.value[sorteredColumn.value] = [
+        ...columns[sorteredColumn.value],
+      ].sort((a, b) => a.priority.id - b.priority.id);
     },
   },
   {
@@ -57,9 +58,9 @@ let sortingItems = ref([
     command: () => {
       selectedSortingName.value.id = 1;
       selectedSortingName.value.name = "asc";
-      columns.value = columns.value.map((column) => {
-        return [...column].sort((a, b) => b.priority.id - a.priority.id);
-      });
+      columns.value[sorteredColumn.value] = [
+        ...columns[sorteredColumn.value],
+      ].sort((a, b) => b.priority.id - a.priority.id);
     },
   },
 ]);
@@ -212,13 +213,26 @@ const saveEditedTaskName = () => {
 
 //// хендлер меню
 
+const button = ref();
 const menu = ref();
 const toggle = (event) => {
   // console.log(menu.value[0])
-  menu.value.forEach((column) => {
+  menu.value.forEach((column, i) => {
     column.toggle(event);
   });
+
+  if (event.target.nodeName === "BUTTON") {
+    sorteredColumn.value = Number(event.target.ariaLabel);
+  } else {
+    return;
+  }
 };
+
+const isThereAnySortableTask = () => {
+  return columns.value.map((column, i) => console.log(i, column.length));
+};
+
+// const catchColumnId()
 
 // Поиск
 
@@ -304,14 +318,17 @@ onMounted(() => {
             <h4 class="column__heading">{{ titles[i] }}</h4>
             <div class="card flex justify-content-center align-items-center">
               <Button
+                ref="button"
                 type="button"
                 icon="pi pi-sort-amount-up"
                 @click="toggle"
                 aria-haspopup="true"
                 aria-controls="overlay_menu"
+                :aria-label="i"
+                :disabled="column.length < 1"
                 link
               />
-              <Menu ref="menu" :id="id" :model="sortingItems" :popup="true" />
+              <Menu ref="menu" :model="sortingItems" :popup="true" />
             </div>
           </div>
           <draggable

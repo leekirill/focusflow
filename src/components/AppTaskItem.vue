@@ -17,7 +17,6 @@ const props = defineProps([
 ]);
 
 let checked = ref(props.completed);
-console.log(checked.value);
 
 const tagColor = computed(() => {
   switch (props.priority) {

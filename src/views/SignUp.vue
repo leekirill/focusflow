@@ -13,8 +13,8 @@ const accept = ref();
 </script>
 
 <template>
-  <div class="flex justify-content-center align-items-center gap-8">
-    <form class="p-fluid">
+  <div class="flex justify-content-center align-items-center gap-8 absolute">
+    <form class="p-fluid bg-white p-6 border-round-xl">
       <div v-focustrap class="card">
         <div class="field">
           <InputText
