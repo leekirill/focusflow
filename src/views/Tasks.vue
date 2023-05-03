@@ -28,6 +28,7 @@ let sortingItems = ref([
     command: () => {
       selectedSortingName.value.id = 0;
       selectedSortingName.value.name = "desc";
+      console.log(sorteredColumn.value);
       columns.value[sorteredColumn.value] = [
         ...columns.value[sorteredColumn.value],
       ].sort((a, b) => b.name.localeCompare(a.name));
@@ -47,9 +48,10 @@ let sortingItems = ref([
     label: "priority desc",
     command: () => {
       selectedSortingName.value.id = 1;
-      selectedSortingName.value.name = "asc";
+      selectedSortingName.value.name = "desc";
+      console.log(columns.value[sorteredColumn.value]);
       columns.value[sorteredColumn.value] = [
-        ...columns[sorteredColumn.value],
+        ...columns.value[sorteredColumn.value],
       ].sort((a, b) => a.priority.id - b.priority.id);
     },
   },
@@ -59,7 +61,7 @@ let sortingItems = ref([
       selectedSortingName.value.id = 1;
       selectedSortingName.value.name = "asc";
       columns.value[sorteredColumn.value] = [
-        ...columns[sorteredColumn.value],
+        ...columns.value[sorteredColumn.value],
       ].sort((a, b) => b.priority.id - a.priority.id);
     },
   },
@@ -129,7 +131,6 @@ const updateTask = (id) => {
     column.map((item) => {
       if (item.id === id) {
         moveTask(item, id, index);
-        // item.completed = !item.completed;
       }
     });
   });
@@ -179,7 +180,6 @@ const saveEditedTaskName = () => {
   columns.value.map((column) => {
     column.find((items) => {
       if (formData.value.id === items.id) {
-        console.log(items.name, formData.value.name);
         items.name = formData.value.name;
         items.description = formData.value.description;
         items.priority = formData.value.priority;
@@ -220,7 +220,6 @@ const toggle = (event) => {
   menu.value.forEach((column, i) => {
     column.toggle(event);
   });
-
   if (event.target.nodeName === "BUTTON") {
     sorteredColumn.value = Number(event.target.ariaLabel);
   } else {
@@ -232,22 +231,21 @@ const toggle = (event) => {
 
 // Поиск
 
-const handleValue = (value) => {
-  searchValue.value = value;
-};
+// const handleValue = (value) => {
+//   searchValue.value = value;
+// };
 
-let filtered = ref();
-
-const filteredArr = computed(() => {
-  filtered.value = columns.value.map((column) =>
-    column.filter((items) => {
-      if (items.name.includes(searchValue.value)) {
-        return items;
-      }
-    })
-  );
-  return filtered.value;
-});
+// const filteredArr = computed(() => {
+//   let filtered = ref();
+//   filtered.value = columns.value.map((column) =>
+//     column.filter((items) => {
+//       if (items.name.includes(searchValue.value)) {
+//         return items;
+//       }
+//     })
+//   );
+//   return filtered.value;
+// });
 
 // Если закончили таску то — в колонку Done
 
@@ -309,7 +307,7 @@ onMounted(() => {
         </div>
       </div>
       <div class="container">
-        <div class="column" v-for="(column, i) in filteredArr" :key="i">
+        <div class="column" v-for="(column, i) in columns" :key="i">
           <div class="flex align-items-baseline justify-content-between">
             <h4 class="column__heading">{{ titles[i] }}</h4>
             <div class="card flex justify-content-center align-items-center">

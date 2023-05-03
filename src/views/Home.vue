@@ -1,5 +1,9 @@
 <script setup>
 import Button from "primevue/button";
+import { computed } from "vue";
+const props = defineProps(["isLoggedIn"]);
+
+const actualLink = computed(() => (props.isLoggedIn ? "/tasks" : "/login"));
 </script>
 
 <template>
@@ -9,7 +13,7 @@ import Button from "primevue/button";
       Achieve greater focus, organization, and tranquility with Focus Flow - the
       world's leading task manager and to-do list application.
     </p>
-    <router-link to="/signup">
+    <router-link :to="actualLink">
       <Button label="Start now" size="large"
     /></router-link>
   </div>

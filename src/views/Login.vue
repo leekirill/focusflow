@@ -4,7 +4,7 @@ import Password from "primevue/password";
 import Button from "primevue/button";
 import Checkbox from "primevue/checkbox";
 import image from "../assets/auth-image.svg";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../firebase/init";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
@@ -13,10 +13,11 @@ const name = ref();
 const email = ref();
 const password = ref();
 const accept = ref();
+const errMsg = ref();
 const router = useRouter();
 
 const signUp = () => {
-  createUserWithEmailAndPassword(auth, email.value, password.value)
+  signInWithEmailAndPassword(auth, email.value, password.value)
     .then(() => {
       updateProfile(auth.currentUser, {
         displayName: name.value,
@@ -26,24 +27,31 @@ const signUp = () => {
     .then(() => {
       console.log(auth.currentUser);
     })
-    .catch((error) => console.error(error.message));
+    .catch((error) => {
+      console.error(error.message);
+      switch (error.code) {
+        case "auth/invalid-email":
+          errMsg.value = "Invalid email";
+          break;
+        case "auth/user-not-found":
+          errMsg.value = "No account with that email was found";
+          break;
+        case "auth/wrong-password":
+          errMsg.value = "Incorrect password";
+          break;
+        default:
+          errMsg.value = "Email or password was incorrect";
+          break;
+      }
+    });
 };
 </script>
 
 <template>
   <div class="container">
     <form class="p-fluid">
-      <h1>Sign up</h1>
+      <h1>Login</h1>
       <div v-focustrap class="card">
-        <div class="field">
-          <InputText
-            id="input"
-            v-model="name"
-            type="text"
-            placeholder="Name"
-            autofocus
-          />
-        </div>
         <div class="field">
           <div class="p-input-icon-right">
             <i class="pi pi-envelope" />
@@ -70,6 +78,7 @@ const signUp = () => {
           />
           <label for="accept">I agree to the terms and conditions*</label>
         </div>
+        <p v-if="errMsg">{{ errMsg }}</p>
         <Button
           type="submit"
           label="Submit"

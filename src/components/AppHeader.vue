@@ -1,5 +1,10 @@
 <script setup>
 import Button from "primevue/button";
+import { ref } from "vue";
+
+const props = defineProps(["handleSignOut", "isLoggedIn"]);
+
+console.log(props.isLoggedIn, props.handleSignOut);
 </script>
 
 <template>
@@ -24,10 +29,20 @@ import Button from "primevue/button";
       </div>
     </div>
     <div class="header__right">
-      <router-link to="/signup">
-        <Button label="Sign up" />
-      </router-link>
-      <Button label="Login" link />
+      <Button
+        v-if="isLoggedIn"
+        @click="handleSignOut"
+        label="Sign out"
+        outlined
+      ></Button>
+      <div v-else>
+        <router-link to="/signup">
+          <Button label="Sign up" />
+        </router-link>
+        <router-link to="/login">
+          <Button label="Login" link />
+        </router-link>
+      </div>
     </div>
   </header>
 </template>

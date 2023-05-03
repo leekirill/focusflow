@@ -21,18 +21,16 @@ let priority = ref([
   { name: "Low", id: 1 },
 ]);
 
-const editTitle = computed(() => {
-  return props.editMode ? "Edit" : "New task";
-});
+const editTitle = computed(() => (props.editMode ? "Edit" : "New task"));
 </script>
 
 <template>
   <Dialog
     :header="editTitle"
     :visible="formIsOpen"
-    modal
     :breakpoints="{ '960px': '75vw', '641px': '80vw' }"
     :style="{ width: '50vw' }"
+    modal
   >
     <div class="flex flex-column gap-4">
       <div class="flex flex-column gap-2">
