@@ -5,8 +5,6 @@ import Tasks from "./views/Tasks.vue";
 import Signup from "./views/Signup.vue";
 import Login from "./views/Login.vue";
 
-let isIn = true;
-
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
@@ -25,7 +23,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.name === "Tasks" && isIn === true) {
+  if (to.name === "Tasks") {
     next();
   } else {
     alert("No");
