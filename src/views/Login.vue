@@ -34,7 +34,6 @@ const signUp = () => {
       console.log(auth.currentUser);
     })
     .catch((error) => {
-      console.error(error.message);
       switch (error.code) {
         case "auth/invalid-email":
           errMsg.value = "Invalid email";

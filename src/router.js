@@ -22,20 +22,20 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach((to, from, next) => {
-  if (to.name === "Tasks") {
-    next();
-  } else {
-    alert("No");
-  }
-  // if (to.matched.some((record) => record.meta.requiresAuth)) {
-  //   if (getAuth().currentUser) {
-  //     next();
-  //   } else {
-  //     alert("you dont have access");
-  //     next("/");
-  //   }
-  // }
-});
+// router.beforeEach((to, from, next) => {
+//   if (to.name === "Tasks") {
+//     next();
+//   } else {
+//     alert("No");
+//   }
+//   // if (to.matched.some((record) => record.meta.requiresAuth)) {
+//   //   if (getAuth().currentUser) {
+//   //     next();
+//   //   } else {
+//   //     alert("you dont have access");
+//   //     next("/");
+//   //   }
+//   // }
+// });
 
 export default router;

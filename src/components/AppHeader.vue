@@ -30,6 +30,7 @@ const props = defineProps(["handleSignOut", "isLoggedIn"]);
         v-if="isLoggedIn"
         @click="handleSignOut"
         label="Sign out"
+        icon="pi pi-sign-out"
         outlined
       ></Button>
       <div v-else>
