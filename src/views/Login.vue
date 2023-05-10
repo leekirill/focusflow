@@ -4,6 +4,12 @@ import Password from "primevue/password";
 import Button from "primevue/button";
 import Checkbox from "primevue/checkbox";
 import image from "../assets/auth-image.svg";
+
+import Toast from "primevue/toast";
+import { useToast } from "primevue/usetoast";
+
+const toast = useToast();
+
 import {
   signInWithEmailAndPassword,
   updateProfile,
@@ -20,6 +26,7 @@ const email = ref();
 const password = ref();
 const accept = ref();
 const errMsg = ref();
+
 const router = useRouter();
 
 const signUp = () => {
@@ -52,8 +59,7 @@ const signUp = () => {
 };
 const signInWithGoogle = () => {
   const provider = new GoogleAuthProvider();
-  signInWithPopup(getAuth(), provider).then((res) => {
-    console.log(res);
+  signInWithPopup(getAuth(), provider).then(() => {
     router.push("/tasks");
   });
 };

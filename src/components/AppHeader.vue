@@ -13,8 +13,13 @@ const props = defineProps(["handleSignOut", "isLoggedIn"]);
             <router-link class="px-4" :to="{ name: 'Home' }">Home</router-link>
           </li>
           <li class="flex align-items-center">
-            <router-link class="px-4" :to="isLoggedIn ? '/tasks' : '/login'"
+            <router-link class="px-4" :to="{ name: 'Tasks' }"
               >Tasks</router-link
+            >
+          </li>
+          <li class="flex align-items-center">
+            <router-link class="px-4" :to="{ name: 'Contacts' }"
+              >Contacts</router-link
             >
           </li>
         </ul>

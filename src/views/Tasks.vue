@@ -1,6 +1,19 @@
 <script setup>
 import { ref, computed, watchEffect, onMounted } from "vue";
 
+import {
+  getFirestore,
+  onSnapshot,
+  collection,
+  doc,
+  deleteDoc,
+  setDoc,
+  getDocs,
+  addDoc,
+  orderBy,
+  query,
+} from "firebase/firestore";
+
 import draggable from "vuedraggable";
 import AppTaskItem from "../components/AppTaskItem.vue";
 import AppModal from "../components/AppModal.vue";
@@ -8,11 +21,12 @@ import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import Toast from "primevue/toast";
 import Menu from "primevue/menu";
-
 import image from "../assets/rest-image.svg";
 
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
+
+let db = getFirestore();
 
 let columns = ref([[], [], [], []]);
 let titles = ref(["No completed", "No started", "In progress", "Done"]);
@@ -113,6 +127,10 @@ const addItem = () => {
   };
 
   columns.value[0].unshift(newTask);
+
+  addDoc(collection(db, "tasks"), {
+    task: newTask,
+  });
 
   formData.value = {
     name: "",
@@ -259,6 +277,18 @@ watchEffect(() => {
       items.completed = true;
     });
   }
+});
+
+onMounted(() => {
+  const getData = async () => {
+    const querySnapshot = await getDocs(collection(db, "tasks"));
+    querySnapshot.forEach((doc) => {
+      columns.value[0].push(doc.data().task);
+      console.log(doc.data().task);
+    });
+  };
+
+  getData();
 });
 
 // Поиск

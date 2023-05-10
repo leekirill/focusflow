@@ -1,41 +1,66 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-
-import Home from "./views/Home.vue";
-import Tasks from "./views/Tasks.vue";
-import Signup from "./views/Signup.vue";
-import Login from "./views/Login.vue";
+import { auth } from "./firebase/init";
+import { onAuthStateChanged } from "firebase/auth";
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
-    { path: "/", name: "Home", component: Home, alias: "/" },
+    {
+      path: "/",
+      name: "Home",
+      component: () => import("./views/Home.vue"),
+      alias: "/",
+    },
     {
       path: "/tasks",
       name: "Tasks",
-      component: Tasks,
+      component: () => import("./views/Tasks.vue"),
       meta: {
         requiresAuth: true,
       },
     },
-    { path: "/signup", name: "Signup", component: Signup },
-    { path: "/login", name: "Login", component: Login },
+    {
+      path: "/contacts",
+      name: "Contacts",
+      component: () => import("./views/Contacts.vue"),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/signup",
+      name: "Signup",
+      component: () => import("./views/Signup.vue"),
+    },
+    {
+      path: "/login",
+      name: "Login",
+      component: () => import("./views/Login.vue"),
+    },
   ],
 });
 
-// router.beforeEach((to, from, next) => {
-//   if (to.name === "Tasks") {
-//     next();
-//   } else {
-//     alert("No");
-//   }
-//   // if (to.matched.some((record) => record.meta.requiresAuth)) {
-//   //   if (getAuth().currentUser) {
-//   //     next();
-//   //   } else {
-//   //     alert("you dont have access");
-//   //     next("/");
-//   //   }
-//   // }
-// });
+const getCurrentUser = () => {
+  return new Promise((res, rej) => {
+    const removeListener = onAuthStateChanged(
+      auth,
+      (user) => {
+        removeListener();
+        res(user);
+      },
+      rej
+    );
+  });
+};
+
+router.beforeEach(async (to, from, next) => {
+  const currentUser = await getCurrentUser();
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  if (requiresAuth && !currentUser) {
+    next("/login");
+  } else {
+    next();
+  }
+});
 
 export default router;
