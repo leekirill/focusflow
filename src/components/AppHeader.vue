@@ -1,7 +1,19 @@
 <script setup>
 import Button from "primevue/button";
+import { getAuth } from "firebase/auth";
+import { ref, onMounted, onUpdated } from "vue";
 
 const props = defineProps(["handleSignOut", "isLoggedIn"]);
+
+let userName = ref("");
+
+onUpdated(() => {
+  new Promise((res, rej) => {
+    res(getAuth());
+  }).then((user) => {
+    userName.value = user.currentUser.displayName;
+  });
+});
 </script>
 
 <template>
@@ -31,13 +43,15 @@ const props = defineProps(["handleSignOut", "isLoggedIn"]);
       </div>
     </div>
     <div class="header__right">
-      <Button
-        v-if="isLoggedIn"
-        @click="handleSignOut"
-        label="Sign out"
-        icon="pi pi-sign-out"
-        outlined
-      ></Button>
+      <div v-if="isLoggedIn" class="flex align-items-center gap-3">
+        <span>{{ userName }}</span>
+        <Button
+          @click="handleSignOut"
+          label="Sign out"
+          icon="pi pi-sign-out"
+          outlined
+        ></Button>
+      </div>
       <div v-else>
         <router-link :to="{ name: 'Signup' }">
           <Button label="Sign up" />

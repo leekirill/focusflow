@@ -38,7 +38,7 @@ const signUp = () => {
       router.push("/tasks");
     })
     .then(() => {
-      console.log(auth.currentUser);
+      currentUser.value = auth.currentUser.displayName;
     })
     .catch((error) => {
       switch (error.code) {
