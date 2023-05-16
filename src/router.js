@@ -1,6 +1,4 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import { auth } from "./firebase/init";
-import { onAuthStateChanged } from "firebase/auth";
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -38,29 +36,6 @@ const router = createRouter({
       component: () => import("./views/Login.vue"),
     },
   ],
-});
-
-const getCurrentUser = () => {
-  return new Promise((res, rej) => {
-    const removeListener = onAuthStateChanged(
-      auth,
-      (user) => {
-        removeListener();
-        res(user);
-      },
-      rej
-    );
-  });
-};
-
-router.beforeEach(async (to, from, next) => {
-  const currentUser = await getCurrentUser();
-  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
-  if (requiresAuth && !currentUser) {
-    next("/login");
-  } else {
-    next();
-  }
 });
 
 export default router;

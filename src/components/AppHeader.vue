@@ -1,6 +1,5 @@
 <script setup>
 import Button from "primevue/button";
-import { getAuth } from "firebase/auth";
 import { ref, onUpdated } from "vue";
 
 const props = defineProps(["handleSignOut", "isLoggedIn"]);
