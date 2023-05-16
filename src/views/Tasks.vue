@@ -73,6 +73,17 @@ let formData = ref({
   completed: false,
 });
 
+const getData = async () => {
+  const res = await fetch("https://dummyjson.com/todos");
+  const data = await res.json();
+  columns.value[0].unshift(...data.todos);
+  console.log(columns.value);
+};
+
+onMounted(() => {
+  getData();
+});
+
 // Добавляем задачу
 
 const handleModal = () => {
@@ -334,16 +345,9 @@ onMounted(() => {
             <template #item="{ element: task }">
               <app-task-item
                 :id="task.id"
-                :name="task.name"
-                :description="task.description"
-                :priority="task.priority.name"
+                :name="task.todo"
                 :completed="task.completed"
-                :updateTask="updateTask"
-                :removeTask="removeTask"
-                :editTask="handleEditForm"
-                :checkedArr="checkedArr"
-              >
-              </app-task-item>
+              />
             </template>
           </draggable>
         </div>
@@ -401,3 +405,16 @@ form {
   }
 }
 </style>
+
+<!-- <app-task-item
+                :id="task.id"
+                :name="task.todo"
+                :description="task.description"
+                :priority="task.priority.name"
+                :completed="task.completed"
+                :updateTask="updateTask"
+                :removeTask="removeTask"
+                :editTask="handleEditForm"
+                :checkedArr="checkedArr"
+              >
+              </app-task-item> -->
