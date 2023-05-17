@@ -19,8 +19,11 @@ const props = defineProps([
 
 // console.log("props в карте задачи: " + props.completed);
 
-let checked = computed(() => {
+const checked = computed(() => {
   return props.completed || props.status === 3 ? true : false;
+});
+const setCompleteClass = computed(() => {
+  return props.completed || props.status === 3 ? "completed" : "card";
 });
 
 const tagColor = computed(() => {
@@ -54,14 +57,10 @@ let getCurrentDate = computed(() => {
   let today = new Date();
   return today.toLocaleDateString("en-US", options);
 });
-
-const isTaskDone = computed(() => {
-  return props.completed ? "completed" : "card";
-});
 </script>
 
 <template>
-  <Card :class="isTaskDone">
+  <Card :class="setCompleteClass">
     <template #title>
       <div class="flex align-items-center">
         <Checkbox

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watchEffect, onMounted } from "vue";
+import { ref, computed, watchEffect, onMounted, onUpdated } from "vue";
 
 import draggable from "vuedraggable";
 import AppTaskItem from "../components/AppTaskItem.vue";
@@ -77,6 +77,7 @@ let formData = ref({
 const getData = async () => {
   const res = await fetch("https://640dc3a6b07afc3b0db57282.mockapi.io/todos");
   const data = await res.json();
+  console.log(data);
 
   data.map((item) => {
     columns.value[item.status].unshift(item);
@@ -92,7 +93,7 @@ const handleModal = () => {
   formIsOpen.value = !formIsOpen.value;
 };
 
-const addItem = () => {
+const addItem = async () => {
   if (editMode === true) {
     editMode.value = !editMode.value;
   }
@@ -116,14 +117,22 @@ const addItem = () => {
   // Объект задачи
 
   let newTask = {
-    id: String(Math.floor(Math.random() * 100)),
+    // id: String(Math.floor(Math.random() * 100)),
     name: formData.value.name,
     description: formData.value.description,
     priority: formData.value.priority,
     completed: false,
+    status: formData.value.status,
   };
 
   columns.value[0].unshift(newTask);
+
+  const res = await fetch("https://640dc3a6b07afc3b0db57282.mockapi.io/todos", {
+    method: "POST",
+    body: formData.value,
+  });
+  const data = await res.json();
+  console.log(formData.value);
 
   formData.value = {
     name: "",
@@ -148,11 +157,12 @@ const updateTask = (id) => {
 
   function moveTask(task, taskId, columnId) {
     if (!task.completed) {
-      columns.value[columnId] = columns.value[columnId].filter(
-        (item) => item.id !== taskId
-      );
+      columns.value[columnId] = columns.value[columnId].filter((item) => {
+        return item.id !== taskId;
+      });
       columns.value[columns.value.length - 1].unshift(task);
     } else {
+      task.status = columnId;
       columns.value[columns.value.length - 1] = columns.value[columnId].filter(
         (item) => item.id !== taskId
       );
@@ -353,6 +363,7 @@ onMounted(() => {
                 :completed="task.completed"
                 :priority="task.priority.name"
                 :status="task.status"
+                :updateTask="updateTask"
               />
             </template>
           </draggable>
