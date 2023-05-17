@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watchEffect } from "vue";
+import { ref, computed } from "vue";
 import Card from "primevue/card";
 import Button from "primevue/button";
 import Checkbox from "primevue/checkbox";
@@ -14,9 +14,14 @@ const props = defineProps([
   "updateTask",
   "removeTask",
   "editTask",
+  "status",
 ]);
 
-let checked = ref(props.completed);
+// console.log("props в карте задачи: " + props.completed);
+
+let checked = computed(() => {
+  return props.completed || props.status === 3 ? true : false;
+});
 
 const tagColor = computed(() => {
   switch (props.priority) {
@@ -64,13 +69,13 @@ const isTaskDone = computed(() => {
           :inputId="id"
           :value="id"
           binary="true"
-          checked="true"
           @input="updateTask(id)"
         />
         <label class="ml-2" :for="id"> {{ props.name }}</label>
       </div>
     </template>
     <template #content>
+      {{ props.status }}
       <p>{{ props.description }}</p>
       <Tag v-show="priority" :value="priority" :severity="tagColor" />
     </template>

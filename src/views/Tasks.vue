@@ -71,18 +71,19 @@ let formData = ref({
   description: "",
   priority: {},
   completed: false,
+  status: 0,
 });
 
 const getData = async () => {
-  const res = await fetch("https://dummyjson.com/todos");
+  const res = await fetch("https://640dc3a6b07afc3b0db57282.mockapi.io/todos");
   const data = await res.json();
-  columns.value[0].unshift(...data.todos);
-  console.log(columns.value);
+
+  data.map((item) => {
+    columns.value[item.status].unshift(item);
+  });
 };
 
-onMounted(() => {
-  getData();
-});
+onMounted(() => getData());
 
 // Добавляем задачу
 
@@ -262,11 +263,13 @@ const toggle = (event) => {
 watchEffect(() => {
   for (let i = 0; i < columns.value.length - 1; i++) {
     columns.value[i].forEach((items) => {
-      items.completed = false;
-      items.columnNumber = i;
+      return;
+      // items.completed = false;
+      // items.columnNumber = i;
     });
     columns.value[columns.value.length - 1].forEach((items) => {
-      items.completed = true;
+      return;
+      // items.completed = true;
     });
   }
 });
@@ -345,8 +348,11 @@ onMounted(() => {
             <template #item="{ element: task }">
               <app-task-item
                 :id="task.id"
-                :name="task.todo"
+                :name="task.name"
+                :description="task.description"
                 :completed="task.completed"
+                :priority="task.priority.name"
+                :status="task.status"
               />
             </template>
           </draggable>
