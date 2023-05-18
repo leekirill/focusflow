@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watchEffect, onMounted, onUpdated } from "vue";
+import { ref, computed, watch, onMounted, onUpdated } from "vue";
 
 import draggable from "vuedraggable";
 import AppTaskItem from "../components/AppTaskItem.vue";
@@ -129,10 +129,13 @@ const addItem = async () => {
 
   const res = await fetch("https://640dc3a6b07afc3b0db57282.mockapi.io/todos", {
     method: "POST",
-    body: formData.value,
+    body: JSON.stringify(newTask),
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
   const data = await res.json();
-  console.log(formData.value);
+  console.log(data);
 
   formData.value = {
     name: "",
@@ -146,7 +149,20 @@ const addItem = async () => {
 
 // Отмечаем задачу
 
-const updateTask = (id) => {
+const updateTask = async (id) => {
+  const updatedTask = {
+    completed: true,
+    status: 3,
+  };
+
+  await fetch(`https://640dc3a6b07afc3b0db57282.mockapi.io/todos/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(updatedTask),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
   columns.value.map((column, index) => {
     column.map((item) => {
       if (item.id === id) {
@@ -270,16 +286,31 @@ const toggle = (event) => {
 
 // Если закончили таску то — в колонку Done
 
-watchEffect(() => {
+const updateStatus = async (id, statusID) => {
+  const updatedTask = {
+    status: statusID,
+  };
+  await fetch(`https://640dc3a6b07afc3b0db57282.mockapi.io/todos/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(updatedTask),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+watch(columns.value, () => {
   for (let i = 0; i < columns.value.length - 1; i++) {
     columns.value[i].forEach((items) => {
-      return;
-      // items.completed = false;
+      console.log(items.id);
+      updateStatus(items.id, i);
+      items.status = i;
+      items.completed = false;
       // items.columnNumber = i;
     });
     columns.value[columns.value.length - 1].forEach((items) => {
-      return;
-      // items.completed = true;
+      items.status = 3;
+      items.completed = true;
     });
   }
 });
