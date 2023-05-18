@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, onMounted, onUpdated } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 
 import draggable from "vuedraggable";
 import AppTaskItem from "../components/AppTaskItem.vue";
@@ -8,6 +8,8 @@ import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import Toast from "primevue/toast";
 import Menu from "primevue/menu";
+import ProgressSpinner from "primevue/progressspinner";
+
 import image from "../assets/rest-image.svg";
 
 import { useToast } from "primevue/usetoast";
@@ -65,6 +67,7 @@ let sortingItems = ref([
     },
   },
 ]);
+let isLoading = ref(false);
 
 let formData = ref({
   name: "",
@@ -75,13 +78,18 @@ let formData = ref({
 });
 
 const getData = async () => {
+  isLoading.value = !isLoading.value;
+
   const res = await fetch("https://640dc3a6b07afc3b0db57282.mockapi.io/todos");
   const data = await res.json();
-  console.log(data);
+  // console.log(data);
 
   data.map((item) => {
+    console.log(item.status);
     columns.value[item.status].unshift(item);
   });
+
+  isLoading.value = !isLoading.value;
 };
 
 onMounted(() => getData());
@@ -122,7 +130,7 @@ const addItem = async () => {
     description: formData.value.description,
     priority: formData.value.priority,
     completed: false,
-    status: formData.value.status,
+    status: 0,
   };
 
   columns.value[0].unshift(newTask);
@@ -268,21 +276,21 @@ const toggle = (event) => {
 
 // Поиск
 
-// const handleValue = (value) => {
-//   searchValue.value = value;
-// };
+const handleValue = (value) => {
+  searchValue.value = value;
+};
 
-// const filteredArr = computed(() => {
-//   let filtered = ref();
-//   filtered.value = columns.value.map((column) =>
-//     column.filter((items) => {
-//       if (items.name.includes(searchValue.value)) {
-//         return items;
-//       }
-//     })
-//   );
-//   return filtered.value;
-// });
+const filteredArr = computed(() => {
+  let filtered = [];
+  filtered = columns.value.map((column) =>
+    column.filter((items) => {
+      if (items.name.includes(searchValue.value)) {
+        return items;
+      }
+    })
+  );
+  return filtered;
+});
 
 // Если закончили таску то — в колонку Done
 
@@ -349,7 +357,7 @@ onMounted(() => {
     />
   </teleport>
   <section>
-    <div v-if="isThereAnyTask" class="panel">
+    <div class="panel">
       <div class="panel__header">
         <Button label="Add task" icon="pi pi-plus" @click="handleModal" />
         <div class="flex gap-3">
@@ -360,53 +368,65 @@ onMounted(() => {
           <Toast />
         </div>
       </div>
-      <div class="container">
-        <div class="column" v-for="(column, i) in columns" :key="i">
-          <div class="flex align-items-baseline justify-content-between">
-            <h4 class="column__heading">{{ titles[i] }}</h4>
-            <div class="card flex justify-content-center align-items-center">
-              <Button
-                ref="button"
-                type="button"
-                icon="pi pi-sort-amount-up"
-                @click="toggle"
-                aria-haspopup="true"
-                aria-controls="overlay_menu"
-                :aria-label="i"
-                :disabled="column.length < 2"
-                link
-              />
-              <Menu ref="menu" :model="sortingItems" :popup="true" />
+
+      <div class="container__loader" v-if="isLoading">
+        <ProgressSpinner
+          style="width: 50px; height: 50px"
+          strokeWidtsh="4"
+          animationDuration="1s"
+          aria-label="Custom ProgressSpinner"
+        />
+      </div>
+
+      <div v-else>
+        <div v-if="isThereAnyTask" class="container">
+          <div class="column" v-for="(column, i) in filteredArr" :key="i">
+            <div class="flex align-items-baseline justify-content-between">
+              <h4 class="column__heading">{{ titles[i] }}</h4>
+              <div class="card flex justify-content-center align-items-center">
+                <Button
+                  ref="button"
+                  type="button"
+                  icon="pi pi-sort-amount-up"
+                  @click="toggle"
+                  aria-haspopup="true"
+                  aria-controls="overlay_menu"
+                  :aria-label="i"
+                  :disabled="column.length < 2"
+                  link
+                />
+                <Menu ref="menu" :model="sortingItems" :popup="true" />
+              </div>
             </div>
+            <draggable
+              :list="column"
+              :itemKey="String(i)"
+              group="tasks"
+              tag="ul"
+              ghost-class="ghost"
+            >
+              <template #item="{ element: task }">
+                <app-task-item
+                  :id="task.id"
+                  :name="task.name"
+                  :description="task.description"
+                  :completed="task.completed"
+                  :priority="task.priority.name"
+                  :status="task.status"
+                  :updateTask="updateTask"
+                />
+              </template>
+            </draggable>
           </div>
-          <draggable
-            :list="column"
-            :itemKey="String(i)"
-            group="tasks"
-            tag="ul"
-            ghost-class="ghost"
-          >
-            <template #item="{ element: task }">
-              <app-task-item
-                :id="task.id"
-                :name="task.name"
-                :description="task.description"
-                :completed="task.completed"
-                :priority="task.priority.name"
-                :status="task.status"
-                :updateTask="updateTask"
-              />
-            </template>
-          </draggable>
+        </div>
+        <div v-else class="p-6 border-round-2xl text-center bg-white">
+          <div class="mb-5">
+            <img :src="image" width="600" />
+            <h1 class="text-center">You don't have any task</h1>
+          </div>
+          <Button label="Add task" icon="pi pi-plus" @click="handleModal" />
         </div>
       </div>
-    </div>
-    <div v-else class="p-6 border-round-2xl text-center bg-white">
-      <div class="mb-5">
-        <img :src="image" width="600" />
-        <h1 class="text-center">You don't have any task</h1>
-      </div>
-      <Button label="Add task" icon="pi pi-plus" @click="handleModal" />
     </div>
   </section>
 </template>
@@ -431,6 +451,17 @@ form {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.container {
+  position: relative;
+  min-height: 500px;
+  &__loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -100%);
+  }
 }
 .ghost {
   background: rgb(231, 231, 231);
