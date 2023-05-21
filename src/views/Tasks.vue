@@ -464,7 +464,7 @@ form {
   }
 }
 .ghost {
-  background: rgb(231, 231, 231);
+  background: rgb(234, 234, 234);
 }
 .column {
   padding: 0px 30px 30px 30px;
