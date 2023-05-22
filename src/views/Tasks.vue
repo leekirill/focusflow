@@ -197,10 +197,17 @@ const updateTask = async (id) => {
 
 // Удаляем задачу
 
-const removeTask = (id) => {
-  columns.value = columns.value.map((column) => {
-    return column.filter((items) => items.id !== id);
+const removeTask = async (id) => {
+  await fetch(`https://640dc3a6b07afc3b0db57282.mockapi.io/todos/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
+
+  // columns.value = columns.value.map((column) => {
+  //   return column.filter((items) => items.id !== id);
+  // });
 };
 
 // Редактируем задачу
@@ -276,21 +283,21 @@ const toggle = (event) => {
 
 // Поиск
 
-const handleValue = (value) => {
-  searchValue.value = value;
-};
+// const handleValue = (value) => {
+//   searchValue.value = value;
+// };
 
-const filteredArr = computed(() => {
-  let filtered = [];
-  filtered = columns.value.map((column) =>
-    column.filter((items) => {
-      if (items.name.includes(searchValue.value)) {
-        return items;
-      }
-    })
-  );
-  return filtered;
-});
+// const filteredArr = computed(() => {
+//   let filtered = [];
+//   filtered = columns.value.map((column) =>
+//     column.filter((items) => {
+//       if (items.name.includes(searchValue.value)) {
+//         return items;
+//       }
+//     })
+//   );
+//   return filtered;
+// });
 
 // Если закончили таску то — в колонку Done
 
@@ -380,7 +387,7 @@ onMounted(() => {
 
       <div v-else>
         <div v-if="isThereAnyTask" class="container">
-          <div class="column" v-for="(column, i) in filteredArr" :key="i">
+          <div class="column" v-for="(column, i) in columns" :key="i">
             <div class="flex align-items-baseline justify-content-between">
               <h4 class="column__heading">{{ titles[i] }}</h4>
               <div class="card flex justify-content-center align-items-center">
@@ -414,6 +421,7 @@ onMounted(() => {
                   :priority="task.priority.name"
                   :status="task.status"
                   :updateTask="updateTask"
+                  :removeTask="removeTask"
                 />
               </template>
             </draggable>
