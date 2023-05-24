@@ -187,10 +187,10 @@ const updateTask = async (id) => {
       columns.value[columns.value.length - 1].unshift(task);
     } else {
       task.status = columnId;
-      columns.value[columns.value.length - 1] = columns.value[columnId].filter(
-        (item) => item.id !== taskId
-      );
-      columns.value[task.columnNumber].unshift(task);
+      columns.value[columns.value.length - 1] = columns.value[
+        columns.value.length - 1
+      ].filter((item) => item.id !== taskId);
+      columns.value[task.status].unshift(task);
     }
   }
 };
