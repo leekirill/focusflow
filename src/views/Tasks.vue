@@ -422,6 +422,7 @@ onMounted(() => {
                   :status="task.status"
                   :updateTask="updateTask"
                   :removeTask="removeTask"
+                  :editTask="handleEditForm"
                 />
               </template>
             </draggable>
